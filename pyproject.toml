@@ -13,6 +13,7 @@ ipykernel = "^6.30.1"
 numpy = "^2.3.2"
 matplotlib = "^3.10.6"
 seaborn = "^0.13.2"
+nbconvert = "^7.16.6"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
