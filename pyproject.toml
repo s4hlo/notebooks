@@ -15,6 +15,7 @@ matplotlib = "^3.10.6"
 seaborn = "^0.13.2"
 nbconvert = "^7.16.6"
 jupytext = "^1.17.3"
+tqdm = "^4.67.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
