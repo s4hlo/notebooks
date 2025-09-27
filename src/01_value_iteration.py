@@ -35,32 +35,21 @@ class AmbienteNavegacaoLabirinto:
         self.r_bad = rewards[1]
         self.r_target = rewards[2]
         self.r_other = rewards[3]
-
         self.action_space = {0: (-1, 0), 1: (1, 0), 2: (0, -1), 3: (0, 1), 4: (0, 0)}
-
         self.recompensas_possiveis = np.array(sorted(set(rewards)))
         self.reward_map = {r: i for i, r in enumerate(self.recompensas_possiveis)}
-
         self.n_states = self.n_rows * self.n_cols
-
         self.n_actions = len(self.action_space)
-
         self.n_rewards = self.recompensas_possiveis.shape[0]
-
         self.state_transition_probabilities = np.zeros(
             (self.n_states, self.n_states, self.n_actions)
         )
-
         self.reward_probabilities = np.zeros(
             (self.n_rewards, self.n_states, self.n_actions)
         )
-
         self.recompensas_imediatas = np.zeros((self.n_states, self.n_actions))
-
         self.transicao_de_estados = np.zeros((self.n_states, self.n_actions), dtype=int)
-
         self.agent_pos = (0, 0)
-
         self._init_dynamics()
 
     def __repr__(self) -> str:
@@ -261,10 +250,6 @@ class AmbienteNavegacaoLabirinto:
             return self.r_target
         else:
             return self.r_other
-
-
-# %% [markdown]
-# ## Funções auxiliares para visualização
 
 
 # %%
