@@ -77,3 +77,5 @@ plot_tabular(Q, kind="Q")
 plot_tabular(Pi, kind="Pi")
 plot_tabular(V, kind="V", ambiente=ambiente, center_zero=False)
 _ = plot_policy(ambiente, Pi)
+
+# %%
