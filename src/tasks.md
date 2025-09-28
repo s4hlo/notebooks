@@ -33,11 +33,13 @@ Em cada laboratório, implemente o algoritmo correspondente e realize os testes 
 2. **Relatório** (`*.pdf`)
 
 #### Conteúdo do PDF:
+
 - **Setup** (parâmetros usados)
 - **Resultados** (figuras e tabelas organizadas por experimento)
 - **Análises curtas** por experimento
 
 #### O PDF **NÃO** deve conter:
+
 - Códigos
 
 ---
@@ -69,9 +71,11 @@ allow_bad_entry = True
 #### Experimentos
 
 1. **Variação do fator de desconto**
+
    - Observar e reportar o efeito de diferentes valores da taxa de desconto (por exemplo: $\gamma \in \{\,0.0,\ 0.5,\ 0.9\,\}$)
 
 2. **Penalidade de estados ruins mais branda**
+
    - Observar e reportar o efeito de trocar $r_{\text{bad}}=-10$ para $r_{\text{bad}}=-1$.
 
 3. **Transformação afim nas recompensas**
@@ -154,6 +158,7 @@ is_slippery = True
 #### Experimentos
 
 1. **Análise do comprimento do episódio (`T`)**
+
    - Fixe o número de episódios (`N=1`) e o fator de desconto ($\gamma=0.9$)
    - Varie o comprimento do episódio (`T` $\in \{1, 5, 10, 15, 30\}$)
 
@@ -182,10 +187,12 @@ is_slippery = True
 #### Experimentos
 
 1. **Análise do número de episódios (`N`)**
+
    - Fixe o comprimento do episódio (`T=100`) e o fator de desconto ($\gamma=0.9$)
    - Varie ($N \in \{10, 100, 1000, 10000\}$)
 
 2. **Análise do comprimento do episódio (`T`)**
+
    - Fixe o número de episódios (`N=10000`) e o fator de desconto ($\gamma=0.9$)
    - Varie o comprimento do episódio (`T` $\in \{1, 10, 50, 100\}$)
 
@@ -214,14 +221,17 @@ is_slippery = True
 #### Experimentos
 
 1. **Análise do número de episódios ($N$)**
+
    - Fixe o comprimento do episódio ($T=10^5$), o fator de desconto ($\gamma=0.9$) e o parâmetro $\epsilon$ ($\epsilon=0.5$)
    - Varie ($N \in \{2, 10, 20, 50\}$)
 
 2. **Análise do comprimento do episódio ($T$)**
+
    - Fixe o número de episódios ($N=20$) e o fator de desconto ($\gamma=0.9$) e o parâmetro $\epsilon$ ($\epsilon=0.5$)
    - Varie o comprimento do episódio ($T \in \{10^3, 10^4, 10^5, 10^6\}$)
 
 3. **Análise do parâmetro $\epsilon$**
+
    - Fixe o comprimento do episódio ($T=10^5$), o número de episódios ($N=20$) e o fator de desconto ($\gamma=0.9$)
    - Varie o parâmetro $\epsilon$ ($\epsilon \in \{0.0, 0.25, 0.5, 0.75, 1.0\}$)
 
@@ -235,6 +245,7 @@ is_slippery = True
 **Em todos os experimentos mostrar:**
 
 1. **Figuras**:
+
    - heatmap de $V(s)$ (função `plot_tabular`)
    - heatmap de $Q(s,a)$ (função `plot_tabular`)
    - heatmap de $\pi(a\mid s)$ (função `plot_tabular`)
