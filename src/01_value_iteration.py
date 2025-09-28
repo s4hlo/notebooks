@@ -67,7 +67,7 @@ ambiente = AmbienteNavegacaoLabirinto(
     bad_states=[(1, 1), (1, 2), (2, 2), (3, 1), (3, 3), (4, 1)],
     target_states=[(3, 2)],
     allow_bad_entry=True,
-    rewards=[-1, -1, 1, 0],
+    rewards=[-1, -10, 1, 0],
 )
 ambiente.plot_labirinto()
 # %%
