@@ -1,11 +1,15 @@
 <style>
 h1 { color: #cba6f7; } /* Pink */
 h2 { color: #89b4fa; } /* Blue */
+h3 { color: #a6e3a1; } /* Green */
+h4 { color: #fab387; } /* Peach */
 </style>
 
 # Tarefas
 
 ## iteracao de valor
+
+> Implemente o algoritmo **iteração de valor**.
 
 1. Variação do fator de desconto
 
@@ -41,7 +45,8 @@ h2 { color: #89b4fa; } /* Blue */
 
 ## iteracao de politica
 
-1. Implemente o algoritmo **iteração de política**.
+> Implemente o algoritmo **iteração de política**.
+
 1. Compare os algoritmos de iteração de valor (laboratório 1) e de iteração de política (laboratório 2) quanto ao número de iterações utilizadas até a condição de convergência ser satisfeita.
 
 ### Configuração base (baseline) - Iteração de Política
@@ -66,8 +71,11 @@ h2 { color: #89b4fa; } /* Blue */
 
 ## iteracao de politica truncada ( usa o gymnaisum )
 
-1. Implemente o algoritmo **iteração de política truncada**.
+> Implemente o algoritmo **iteração de política truncada**.
+
 1. Gere um **gráfico de dispersão** em que cada ponto (x,y) corresponde à (valor do j_truncado, iteração em que a condição de convergência foi satisfeita para este j_truncado).
+
+> ⚠️ esse eh o unico q nao usa o gridworld
 
 ### Utilize a seguinte configuração do ambiente FrozenLake para os experimentos
 
@@ -91,7 +99,7 @@ h2 { color: #89b4fa; } /* Blue */
 
 ## mc basico
 
-1. Implemente o algoritmo **MC básico**.
+> Implemente o algoritmo **MC básico**.
 
 1. Analise o impacto o comprimento do episódio (`T`):
 
@@ -125,7 +133,7 @@ h2 { color: #89b4fa; } /* Blue */
 
 ## mc inicios exploratorios
 
-1. Implemente o algoritmo **MC com inícios exploratórios**.
+> Implemente o algoritmo **MC com inícios exploratórios**.
 
 1. Analise o impacto do número de episódios (`N`):
 
@@ -166,7 +174,7 @@ h2 { color: #89b4fa; } /* Blue */
 
 ## mc e greedy
 
-1. Implemente o algoritmo **MC $\epsilon$-guloso**.
+> Implemente o algoritmo **MC $\epsilon$-guloso**.
 
 1. Analise o impacto do número de episódios ($N$):
 
