@@ -7,9 +7,25 @@ h4 { color: #fab387; } /* Peach */
 
 # Tarefas
 
-## iteracao de valor
+## instruções
 
-> Implemente o algoritmo **iteração de valor**.
+em cada um implemente o algoritmo correstpondente e realize os testes descritos
+
+> Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
+
+**Entregáveis:**
+
+1. **Código** (notebook `*.ipynb`)
+1. **Relatório** (`*.pdf`).
+
+- O PDF deve conter:
+  - **Setup** (parâmetros usados).
+  - **Resultados** (figuras e tabelas organizadas por experimento).
+  - **Análises curtas** por experimento.
+- O PDF **NÃO** deve conter:
+  - Códigos.
+
+## iteracao de valor
 
 1. Variação do fator de desconto
 
@@ -32,7 +48,6 @@ h4 { color: #fab387; } /* Peach */
 - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
 - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
 
-> Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
 
 **Em todos os experimentos mostrar:**
 
@@ -45,8 +60,6 @@ h4 { color: #fab387; } /* Peach */
 
 ## iteração de política
 
-> Implemente o algoritmo **iteração de política**.
-
 1. Compare os algoritmos de iteração de valor (laboratório 1) e de iteração de política (laboratório 2) quanto ao número de iterações utilizadas até a condição de convergência ser satisfeita.
 
 ### Configuração base (baseline) - Iteração de Política
@@ -58,7 +71,6 @@ h4 { color: #fab387; } /* Peach */
 - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
 - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
 
-> Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
 
 **Em todos os experimentos mostrar:**
 
@@ -70,8 +82,6 @@ h4 { color: #fab387; } /* Peach */
 3. **Discussão**: texto breve (3-6 linhas) por experimento.
 
 ## iteração de política truncada (usa o gymnasium)
-
-> Implemente o algoritmo **iteração de política truncada**.
 
 1. Gere um **gráfico de dispersão** em que cada ponto (x,y) corresponde à (valor do j_truncado, iteração em que a condição de convergência foi satisfeita para este j_truncado).
 
@@ -98,8 +108,6 @@ h4 { color: #fab387; } /* Peach */
    - gráfico de dispersão
 
 ## mc basico
-
-> Implemente o algoritmo **MC básico**.
 
 1. Analise o impacto o comprimento do episódio (`T`):
 
@@ -132,8 +140,6 @@ h4 { color: #fab387; } /* Peach */
 2. **Discussão**: texto breve (3-6 linhas) por experimento.
 
 ## mc inícios exploratórios
-
-> Implemente o algoritmo **MC com inícios exploratórios**.
 
 1. Analise o impacto do número de episódios (`N`):
 
@@ -173,8 +179,6 @@ h4 { color: #fab387; } /* Peach */
 2. **Discussão**: texto breve (3-6 linhas) por experimento.
 
 ## mc epsilon greedy
-
-> Implemente o algoritmo **MC $\epsilon$-guloso**.
 
 1. Analise o impacto do número de episódios ($N$):
 
@@ -219,17 +223,3 @@ h4 { color: #fab387; } /* Peach */
    - número de visitas por par (s,a) (função `plot_visitas_log` ou `plot_tabular`)
 
 2. **Discussão**: texto breve (3-6 linhas) por experimento.
-
-## instruções
-
-**Entregáveis:**
-
-1. **Código** (notebook `*.ipynb`)
-1. **Relatório** (`*.pdf`).
-
-- O PDF deve conter:
-  - **Setup** (parâmetros usados).
-  - **Resultados** (figuras e tabelas organizadas por experimento).
-  - **Análises curtas** por experimento.
-- O PDF **NÃO** deve conter:
-  - Códigos.
