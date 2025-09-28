@@ -278,3 +278,27 @@ def plot_tabular(
         plt.show()
 
     return
+
+def plot_visitas_log(n_visitas):
+    """
+    Gera um gráfico de dispersão com escala logarítmica no eixo y
+    mostrando o número de visitas para cada par (s,a).
+
+    Parâmetros
+    ----------
+    n_visitas : np.ndarray
+        Matriz de número de visitas de shape (n_states, n_actions).
+    """
+    n_states, n_actions = n_visitas.shape
+    x = np.arange(n_states * n_actions)  # índice linear do par (s,a)
+    y = n_visitas.flatten()              # número de visitas
+
+    plt.figure(figsize=(8, 4))
+    plt.scatter(x, y, s=10, alpha=0.7)
+    plt.yscale('log')
+    plt.xlabel("Índice linear do par (s,a)")
+    plt.ylabel("Número de visitas ao par (s,a)")
+    plt.title("Frequência de visitas (escala log)")
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.show()
