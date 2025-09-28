@@ -1,10 +1,3 @@
-<style>
-h1 { color: #cba6f7; } /* Pink */
-h2 { color: #89b4fa; } /* Blue */
-h3 { color: #a6e3a1; } /* Green */
-h4 { color: #fab387; } /* Peach */
-</style>
-
 # Tarefas de Aprendizado por Reforço
 
 ## Índice
@@ -25,20 +18,20 @@ h4 { color: #fab387; } /* Peach */
 
 Em cada laboratório, implemente o algoritmo correspondente e realize os testes descritos.
 
-> **Importante**: Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
+> **Importante** Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
 
 ### Entregáveis
 
 1. **Código** (notebook `*.ipynb`)
 2. **Relatório** (`*.pdf`)
 
-#### Conteúdo do PDF:
+#### Conteúdo do PDF
 
 - **Setup** (parâmetros usados)
 - **Resultados** (figuras e tabelas organizadas por experimento)
 - **Análises curtas** por experimento
 
-#### O PDF **NÃO** deve conter:
+#### O PDF **NÃO** deve conter
 
 - Códigos
 
@@ -63,12 +56,12 @@ allow_bad_entry = True
 
 ### 3.1 Iteração de Valor
 
-#### Configuração Específica
+#### Configuração Específica - Iteração de Valor
 
 > - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
 > - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
 
-#### Experimentos
+#### Experimentos - Iteração de Valor
 
 1. **Variação do fator de desconto**
 
@@ -81,7 +74,7 @@ allow_bad_entry = True
 3. **Transformação afim nas recompensas**
    - Observar e reportar o efeito de uma transformação afim ($r' = a\,r + b$, com $a>0$) em todas as recompensas, isto é, em todos os elementos de $[\,r_{\text{boundary}}, r_{\text{bad}}, r_{\text{target}}, r_{\text{other}}\,]$.
 
-#### Resultados Esperados
+#### Resultados Esperados - Iteração de Valor
 
 **Em todos os experimentos mostrar:**
 
@@ -94,17 +87,17 @@ allow_bad_entry = True
 
 ### 3.2 Iteração de Política
 
-#### Configuração Específica
+#### Configuração Específica - Iteração de Política
 
 > - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
 > - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
 
-#### Experimentos
+#### Experimentos - Iteração de Política
 
 1. **Comparação de algoritmos**
    - Compare os algoritmos de iteração de valor (laboratório 1) e de iteração de política (laboratório 2) quanto ao número de iterações utilizadas até a condição de convergência ser satisfeita.
 
-#### Resultados Esperados
+#### Resultados Esperados - Iteração de Política
 
 **Em todos os experimentos mostrar:**
 
@@ -127,12 +120,12 @@ render_mode = "rgb_array"
 is_slippery = True
 ```
 
-#### Experimentos
+#### Experimentos - Política Truncada
 
 1. **Gráfico de dispersão**
    - Gere um gráfico de dispersão em que cada ponto (x,y) corresponde à (valor do j_truncado, iteração em que a condição de convergência foi satisfeita para este j_truncado).
 
-#### Resultados Esperados
+#### Resultados Esperados - Política Truncada
 
 ##### Configuração `map_name = '4x4'`
 
@@ -150,12 +143,12 @@ is_slippery = True
 
 ### 3.4 MC Básico
 
-#### Configuração Específica
+#### Configuração Específica - MC Básico
 
 > - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
 > - `max_iter=20`
 
-#### Experimentos
+#### Experimentos - MC Básico
 
 1. **Análise do comprimento do episódio (`T`)**
 
@@ -166,7 +159,7 @@ is_slippery = True
    - Fixe o comprimento do episódio (`T=30`) e o número de episódios (`N=1`)
    - Varie o fator de desconto ($\gamma \in \{0.0, 0.5, 0.9, 0.95, 0.99\}$)
 
-#### Resultados Esperados
+#### Resultados Esperados - MC Básico
 
 **Em todos os experimentos mostrar:**
 
@@ -179,12 +172,12 @@ is_slippery = True
 
 ### 3.5 MC Inícios Exploratórios
 
-#### Configuração Específica
+#### Configuração Específica - MC Inícios Exploratórios
 
 > - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
 > - `max_iter=20`
 
-#### Experimentos
+#### Experimentos - MC Inícios Exploratórios
 
 1. **Análise do número de episódios (`N`)**
 
@@ -200,7 +193,7 @@ is_slippery = True
    - Fixe o comprimento do episódio (`T=100`) e o número de episódios (`N=10000`)
    - Varie o fator de desconto ($\gamma \in \{0.0, 0.5, 0.9, 0.95, 0.99\}$)
 
-#### Resultados Esperados
+#### Resultados Esperados - MC Inícios Exploratórios
 
 **Em todos os experimentos mostrar:**
 
@@ -214,11 +207,11 @@ is_slippery = True
 
 ### 3.6 MC Epsilon Greedy
 
-#### Configuração Específica
+#### Configuração Específica - MC Epsilon Greedy
 
 > - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -1,\ 1,\ 0]$
 
-#### Experimentos
+#### Experimentos - MC Epsilon Greedy
 
 1. **Análise do número de episódios ($N$)**
 
@@ -240,7 +233,7 @@ is_slippery = True
    - Configuração para ambos os algoritmos: $N=20$, $T=10^5$, $\gamma=0.9$
    - Para o **MC $\epsilon$-guloso** utilize $\epsilon=0.5$
 
-#### Resultados Esperados
+#### Resultados Esperados - MC Epsilon Greedy
 
 **Em todos os experimentos mostrar:**
 
