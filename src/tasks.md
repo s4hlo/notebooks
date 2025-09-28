@@ -30,7 +30,7 @@ h4 { color: #fab387; } /* Peach */
 - `bad_states = [(1, 1), (1, 2), (2, 2), (3, 1), (3, 3), (4, 1)]`
 - `allow_bad_entry = True`
 - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
-- tolerância e limite: $\theta = 10^{-6}$, `max_iteracoes = 1000`
+- tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
 
 > Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
 
@@ -43,7 +43,7 @@ h4 { color: #fab387; } /* Peach */
 2. **Convergência**: número de iterações até $\lVert v_{k+1}-v_k\rVert_\infty < \theta$.
 3. **Discussão**: texto breve (3–6 linhas) por experimento.
 
-## iteracao de politica
+## iteração de política
 
 > Implemente o algoritmo **iteração de política**.
 
@@ -56,7 +56,7 @@ h4 { color: #fab387; } /* Peach */
 - `bad_states = [(1, 1), (1, 2), (2, 2), (3, 1), (3, 3), (4, 1)]`
 - `allow_bad_entry = True`
 - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
-- tolerância e limite: $\theta = 10^{-6}$, `max_iteracoes = 1000`
+- tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
 
 > Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
 
@@ -69,13 +69,13 @@ h4 { color: #fab387; } /* Peach */
 2. **Convergência**: número de iterações até $\lVert v_{\pi_k}-v_{\pi_{k-1}}\rVert_\infty < \theta_{política}$.
 3. **Discussão**: texto breve (3-6 linhas) por experimento.
 
-## iteracao de politica truncada ( usa o gymnaisum )
+## iteração de política truncada (usa o gymnasium)
 
 > Implemente o algoritmo **iteração de política truncada**.
 
 1. Gere um **gráfico de dispersão** em que cada ponto (x,y) corresponde à (valor do j_truncado, iteração em que a condição de convergência foi satisfeita para este j_truncado).
 
-> ⚠️ esse eh o unico q nao usa o gridworld
+> ⚠️ esse é o único que não usa o gridworld
 
 ### Utilize a seguinte configuração do ambiente FrozenLake para os experimentos
 
@@ -128,10 +128,10 @@ h4 { color: #fab387; } /* Peach */
    - heatmap de $V(s)$ (função `plot_tabular`);
    - heatmap de $Q(s,a)$ (função `plot_tabular`);
    - heatmap de $\pi(a\mid s)$ (função `plot_tabular`);
-   - politica aprendida (função `plot_policy`)
+   - política aprendida (função `plot_policy`)
 2. **Discussão**: texto breve (3-6 linhas) por experimento.
 
-## mc inicios exploratorios
+## mc inícios exploratórios
 
 > Implemente o algoritmo **MC com inícios exploratórios**.
 
@@ -172,7 +172,7 @@ h4 { color: #fab387; } /* Peach */
    - número de visitas por par (s,a) (função `plot_visitas_log` ou `plot_tabular`)
 2. **Discussão**: texto breve (3-6 linhas) por experimento.
 
-## mc e greedy
+## mc epsilon greedy
 
 > Implemente o algoritmo **MC $\epsilon$-guloso**.
 
@@ -220,7 +220,7 @@ h4 { color: #fab387; } /* Peach */
 
 2. **Discussão**: texto breve (3-6 linhas) por experimento.
 
-## instrucoes
+## instruções
 
 **Entregáveis:**
 
