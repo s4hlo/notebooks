@@ -48,7 +48,6 @@ em cada um implemente o algoritmo correstpondente e realize os testes descritos
 - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
 - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
 
-
 **Em todos os experimentos mostrar:**
 
 1. **Figuras**:
@@ -70,7 +69,6 @@ em cada um implemente o algoritmo correstpondente e realize os testes descritos
 - `allow_bad_entry = True`
 - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
 - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
-
 
 **Em todos os experimentos mostrar:**
 
