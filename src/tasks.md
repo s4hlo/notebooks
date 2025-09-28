@@ -11,7 +11,18 @@ h4 { color: #fab387; } /* Peach */
 
 em cada um implemente o algoritmo correstpondente e realize os testes descritos
 
-> Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
+## setup base ( gridworld )
+
+```python
+ world_size = (5, 5)
+target_states = [(3, 2)]
+bad_states = [(1, 1), (1, 2), (2, 2), (3, 1), (3, 3), (4, 1)]
+allow_bad_entry = True
+```
+
+As configurações específicas de cada algoritmo (recompensas, parâmetros de convergência, etc.) são detalhadas nas seções individuais abaixo.
+
+> ⚠️ Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
 
 **Entregáveis:**
 
@@ -39,14 +50,10 @@ em cada um implemente o algoritmo correstpondente e realize os testes descritos
 
 - Observar e reportar o efeito de uma transformação afim ($r' = a\,r + b$, com $a>0$) em todas as recompensas, isto é, em todos os elementos de $[\,r_{\text{boundary}}, r_{\text{bad}}, r_{\text{target}}, r_{\text{other}}\,]$.
 
-### Configuração base (baseline) - Iteração de Valor
+### Configuração específica - Iteração de Valor
 
-- `world_size = (5, 5)`
-- `target_states = [(3, 2)]`
-- `bad_states = [(1, 1), (1, 2), (2, 2), (3, 1), (3, 3), (4, 1)]`
-- `allow_bad_entry = True`
-- recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
-- tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
+> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
+> - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
 
 **Em todos os experimentos mostrar:**
 
@@ -61,14 +68,10 @@ em cada um implemente o algoritmo correstpondente e realize os testes descritos
 
 1. Compare os algoritmos de iteração de valor (laboratório 1) e de iteração de política (laboratório 2) quanto ao número de iterações utilizadas até a condição de convergência ser satisfeita.
 
-### Configuração base (baseline) - Iteração de Política
+### Configuração específica - Iteração de Política
 
-- `world_size = (5, 5)`
-- `target_states = [(3, 2)]`
-- `bad_states = [(1, 1), (1, 2), (2, 2), (3, 1), (3, 3), (4, 1)]`
-- `allow_bad_entry = True`
-- recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
-- tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
+> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
+> - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
 
 **Em todos os experimentos mostrar:**
 
@@ -119,14 +122,10 @@ em cada um implemente o algoritmo correstpondente e realize os testes descritos
 
 - Varie o fator de desconto ($\gamma \in \{0.0, 0.5, 0.9, 0.95, 0.99\}$).
 
-### Configuração base (baseline) - MC Básico
+### Configuração específica - MC Básico
 
-- `world_size = (5, 5)`
-- `target_states = [(3, 2)]`
-- `bad_states = [(1, 1), (1, 2), (2, 2), (3, 1), (3, 3), (4, 1)]`
-- `allow_bad_entry = True`
-- recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
-- `max_iter=20`
+> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
+> - `max_iter=20`
 
 **Em todos os experimentos mostrar:**
 
@@ -157,14 +156,10 @@ em cada um implemente o algoritmo correstpondente e realize os testes descritos
 
 - Varie o fator de desconto ($\gamma \in \{0.0, 0.5, 0.9, 0.95, 0.99\}$).
 
-### Configuração base - MC Inícios Exploratórios
+### Configuração específica - MC Inícios Exploratórios
 
-- `world_size = (5, 5)`
-- `target_states = [(3, 2)]`
-- `bad_states = [(1, 1), (1, 2), (2, 2), (3, 1), (3, 3), (4, 1)]`
-- `allow_bad_entry = True`
-- recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
-- `max_iter=20`
+> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
+> - `max_iter=20`
 
 **Em todos os experimentos mostrar:**
 
@@ -202,13 +197,9 @@ em cada um implemente o algoritmo correstpondente e realize os testes descritos
 
    - Para o **MC $\epsilon$-guloso** utilize $\epsilon=0.5$.
 
-### Configuração base - MC Epsilon Greedy
+### Configuração específica - MC Epsilon Greedy
 
-- `world_size = (5, 5)`
-- `target_states = [(3, 2)]`
-- `bad_states = [(1, 1), (1, 2), (2, 2), (3, 1), (3, 3), (4, 1)]`
-- `allow_bad_entry = True`
-- recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -1,\ 1,\ 0]$
+> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -1,\ 1,\ 0]$
 
 **Em todos os experimentos mostrar:**
 
