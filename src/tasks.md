@@ -38,6 +38,11 @@ As configurações específicas de cada algoritmo (recompensas, parâmetros de c
 
 ## iteracao de valor
 
+### Configuração específica - Iteração de Valor
+
+> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
+> - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
+
 1. Variação do fator de desconto
 
 - Observar e reportar o efeito de diferentes valores da taxa de desconto (por exemplo: $\gamma \in \{\,0.0,\ 0.5,\ 0.9\,\}$)
@@ -50,11 +55,6 @@ As configurações específicas de cada algoritmo (recompensas, parâmetros de c
 
 - Observar e reportar o efeito de uma transformação afim ($r' = a\,r + b$, com $a>0$) em todas as recompensas, isto é, em todos os elementos de $[\,r_{\text{boundary}}, r_{\text{bad}}, r_{\text{target}}, r_{\text{other}}\,]$.
 
-### Configuração específica - Iteração de Valor
-
-> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
-> - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
-
 **Em todos os experimentos mostrar:**
 
 1. **Figuras**:
@@ -66,12 +66,12 @@ As configurações específicas de cada algoritmo (recompensas, parâmetros de c
 
 ## iteração de política
 
-1. Compare os algoritmos de iteração de valor (laboratório 1) e de iteração de política (laboratório 2) quanto ao número de iterações utilizadas até a condição de convergência ser satisfeita.
-
 ### Configuração específica - Iteração de Política
 
 > - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
 > - tolerância e limite: $\theta = 10^{-6}$, `max_iterações = 1000`
+
+1. Compare os algoritmos de iteração de valor (laboratório 1) e de iteração de política (laboratório 2) quanto ao número de iterações utilizadas até a condição de convergência ser satisfeita.
 
 **Em todos os experimentos mostrar:**
 
@@ -110,6 +110,11 @@ As configurações específicas de cada algoritmo (recompensas, parâmetros de c
 
 ## mc basico
 
+### Configuração específica - MC Básico
+
+> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
+> - `max_iter=20`
+
 1. Analise o impacto o comprimento do episódio (`T`):
 
 - Fixe o número de episódios (`N=1`) e o fator de desconto ($\gamma=0.9$).
@@ -122,11 +127,6 @@ As configurações específicas de cada algoritmo (recompensas, parâmetros de c
 
 - Varie o fator de desconto ($\gamma \in \{0.0, 0.5, 0.9, 0.95, 0.99\}$).
 
-### Configuração específica - MC Básico
-
-> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
-> - `max_iter=20`
-
 **Em todos os experimentos mostrar:**
 
 1. **Figuras**:
@@ -137,6 +137,11 @@ As configurações específicas de cada algoritmo (recompensas, parâmetros de c
 2. **Discussão**: texto breve (3-6 linhas) por experimento.
 
 ## mc inícios exploratórios
+
+### Configuração específica - MC Inícios Exploratórios
+
+> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
+> - `max_iter=20`
 
 1. Analise o impacto do número de episódios (`N`):
 
@@ -156,11 +161,6 @@ As configurações específicas de cada algoritmo (recompensas, parâmetros de c
 
 - Varie o fator de desconto ($\gamma \in \{0.0, 0.5, 0.9, 0.95, 0.99\}$).
 
-### Configuração específica - MC Inícios Exploratórios
-
-> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -10,\ 1,\ 0]$
-> - `max_iter=20`
-
 **Em todos os experimentos mostrar:**
 
 1. **Figuras**:
@@ -172,6 +172,10 @@ As configurações específicas de cada algoritmo (recompensas, parâmetros de c
 2. **Discussão**: texto breve (3-6 linhas) por experimento.
 
 ## mc epsilon greedy
+
+### Configuração específica - MC Epsilon Greedy
+
+> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -1,\ 1,\ 0]$
 
 1. Analise o impacto do número de episódios ($N$):
 
@@ -196,10 +200,6 @@ As configurações específicas de cada algoritmo (recompensas, parâmetros de c
    - Configuração para ambos os algoritmos: $N=20$, $T=10^5$, $\gamma=0.9$.
 
    - Para o **MC $\epsilon$-guloso** utilize $\epsilon=0.5$.
-
-### Configuração específica - MC Epsilon Greedy
-
-> - recompensas base: $[\,r_{\text{boundary}},\ r_{\text{bad}},\ r_{\text{target}},\ r_{\text{other}}\,] = [-1,\ -1,\ 1,\ 0]$
 
 **Em todos os experimentos mostrar:**
 
