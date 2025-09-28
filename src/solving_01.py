@@ -4,10 +4,6 @@ from typing import Tuple
 from utils.ambiente import AmbienteNavegacaoLabirinto
 from utils.plot import plot_policy, plot_tabular
 
-
-# %% [markdown]
-# ## Iteração de valor
-
 # %%
 def iteracao_de_valor(
     ambiente: "AmbienteNavegacaoLabirinto",
@@ -62,10 +58,7 @@ def iteracao_de_valor(
 
 
 # %% [markdown]
-# ## Experimento
-
-# %% [markdown]
-# ### Simulação
+# ## Experimentos
 
 # %%
 ambiente = AmbienteNavegacaoLabirinto(
@@ -78,9 +71,6 @@ ambiente = AmbienteNavegacaoLabirinto(
 ambiente.plot_labirinto()
 # %%
 V, Q, Pi, k = iteracao_de_valor(ambiente, gamma=0.9, theta=1e-6, max_iteracoes=1000)
-
-# %% [markdown]
-# ### Visualização
 
 # %%
 plot_tabular(Q, kind="Q")
