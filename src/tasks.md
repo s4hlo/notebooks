@@ -18,22 +18,21 @@
 
 Em cada laboratório, implemente o algoritmo correspondente e realize os testes descritos.
 
-> **Importante** Se alterar qualquer parâmetro do setup, **documente explicitamente** no relatório.
+> **Importante** Se alterar qualquer parâmetro do setup, **documente explicitamente** no notebook.
+> **Importante** O notebook deve ser organizado em seções, com títulos e sub-títulos claros.
+> **Importante** os notebooks devem estar no formato jupytext em .py
 
 ### Entregáveis
 
-1. **Código** (notebook `*.ipynb`)
-2. **Relatório** (`*.pdf`)
+1. **Relatório** (notebook `*.ipynb`)
 
-#### Conteúdo do PDF
+#### Conteúdo do Notebook
 
-- **Setup** (parâmetros usados)
+- **Setup** (parâmetros usados em markdown)
 - **Resultados** (figuras e tabelas organizadas por experimento)
-- **Análises curtas** por experimento
-
-#### O PDF **NÃO** deve conter
-
-- Códigos
+- **Análises curtas** por experimento em markdown
+- **Código** (notebook `*.ipynb`)
+- **execução** (códigos completos)
 
 ---
 
