@@ -16,14 +16,4 @@ Resolver a tarefa de **iteração de valor** descrita no `@tasks.md` usando `@01
 
 ## Tarefa
 
-Converter arquivo `.py` (formato jupytext percent) para notebook `.ipynb`.
-
-```bash
-poetry run jupytext --from py:percent --to ipynb src/value_iteration.py
-```
-
-Executa e converte notebook `.ipynb` para HTML mostrando apenas resultados e markdown (sem código).
-
-```bash
-poetry run jupyter nbconvert --to html --execute--no-input value_iteration.ipynb --output value_iteration_done.html
-```
+after finish the .py execute the `convert to notebook.py` script to convert the .py to notebook and html.
