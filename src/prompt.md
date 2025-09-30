@@ -21,7 +21,7 @@ Converter arquivo `.py` (formato jupytext percent) para notebook `.ipynb`.
 ## Comando
 
 ```bash
-poetry run jupytext --from py:percent --to ipynb src/01_value_iteration.py
+poetry run jupytext --from py:percent --to ipynb src/value_iteration.py
 ```
 
 ## Resultado
@@ -40,9 +40,18 @@ Converter notebook `.ipynb` para HTML mostrando apenas resultados e markdown (se
 
 ## Comando
 
+before we must run the notebook to generate the results
+
 ```bash
-poetry run jupyter nbconvert --to html --no-input src/01_value_iteration.ipynb
+poetry run jupyter  
 ```
+
+convert the executed notebook to html
+
+```bash
+poetry run jupyter nbconvert --to html --execute--no-input value_iteration.ipynb --output value_iteration_done.html
+```
+
 
 ## Resultado
 
