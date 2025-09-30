@@ -8,7 +8,7 @@
 # In_estadostala os pacotes necessários:
 # - gymnasium[toy-text]: inclui ambientes simples como FrozenLake, Taxi, etc.
 # - imageio[ffmpeg]: permite salvar vídeos e GIFs (formato .mp4 ou .gif)
-!pip install gymnasium[toy-text] imageio[ffmpeg]
+# !pip install gymnasium[toy-text] imageio[ffmpeg]
 
 # %%
 # Importa as bibliotecas principais
