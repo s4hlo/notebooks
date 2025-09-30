@@ -13,7 +13,7 @@ def convert_py_to_ipynb(py_file):
     print("✅ OK")
     return ipynb_file
 
-def convert_ipynb_to_html(ipynb_file):
+def convert_to_html(ipynb_file):
     ipynb_path = Path(ipynb_file)
     html_file = ipynb_path.with_suffix('.html')
     
@@ -31,4 +31,4 @@ if __name__ == "__main__":
     for py_file in file_paths:
         print(f"\n📁 {py_file}")
         ipynb_file = convert_py_to_ipynb(py_file)
-        convert_ipynb_to_html(ipynb_file)
+        convert_to_html(ipynb_file)
