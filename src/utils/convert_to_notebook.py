@@ -3,6 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+# TODO make this more generic to fit any purpose
 def convert_py_to_ipynb(py_file):
     py_path = Path(py_file)
     ipynb_file = py_path.with_suffix('.ipynb')

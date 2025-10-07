@@ -1,12 +1,8 @@
 # %%
 import turtle
 from typing import Dict, List, Callable, Tuple, Optional
+from src.fractals.l_system import generate_lsystem
 
-def generate_lsystem(axiom: str, rules: Dict[str, str], iterations: int) -> List[str]:
-    s = axiom
-    for _ in range(iterations):
-        s = "".join(rules.get(ch, ch) for ch in s)
-    return list(s)
 
 def render_lsystem(
     seq: List[str],
@@ -17,7 +13,9 @@ def render_lsystem(
     heading: float = 0.0,
     speed: int = 0,
     custom_actions: Optional[Dict[str, Callable[[turtle.Turtle, float, float, list], None]]] = None,
-    window_title: str = "L-System"
+    window_title: str = "L-System",
+    color1: str = "blue",
+    color2: str = "red"
 ) -> None:
     screen = turtle.Screen()
     screen.title(window_title)
@@ -29,9 +27,13 @@ def render_lsystem(
     pen.pendown()
 
     stack: list = []
+    current_color = color1
 
     def act_forward(p: turtle.Turtle, a: float, st: float, _stack: list):
+        nonlocal current_color
+        p.color(current_color)
         p.forward(st)
+        current_color = color2 if current_color == color1 else color1
 
     def act_move(p: turtle.Turtle, a: float, st: float, _stack: list):
         p.penup(); p.forward(st); p.pendown()
@@ -70,6 +72,19 @@ def render_lsystem(
 
     turtle.done()
 
-seq = generate_lsystem("X", {"X": "F-[[X]+X]+F[+FX]-X", "F": "FF"}, iterations=4)
-render_lsystem(seq, angle=24, step=5, start_pos=(0, -300), heading=90, speed=0, window_title="Plant")
+def render_iterations_separate(sequences: List[List[str]], angle: float, step: float, spacing: float = 200):
+    """Desenha cada sequência em posições separadas, sem sobreposição"""
+    for i, seq in enumerate(sequences):
+        start_x = i * spacing - (len(sequences) - 1) * spacing / 2  # Centralizar
+        render_lsystem(seq, angle=angle, step=step, 
+                      start_pos=(start_x, -300), heading=90, speed=0, 
+                      window_title=f"Iteração {i}")
+
+# Exemplo de uso
+sequences = []
+for i in range(4):
+    seq = generate_lsystem("F", {"F": "F-F++F-F"}, iterations=i)
+    sequences.append(seq)
+
+render_iterations_separate(sequences, angle=60, step=8, spacing=150)
 # %%
