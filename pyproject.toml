@@ -18,6 +18,8 @@ jupytext = "^1.17.3"
 tqdm = "^4.67.1"
 nbclient = "^0.10.2"
 pandoc = "^2.4"
+scikit-learn = "^1.5.2"
+torch = "^2.8.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
