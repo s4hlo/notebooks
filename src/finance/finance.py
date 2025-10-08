@@ -12,6 +12,11 @@ class NubankAnalyzer:
         self.load_data()
         self.separate_data()
 
+    def add_section(self, text: str, insights: list[str]):
+        string = "\n> === " + text + " ===\n"
+        insights.append(string)
+
+
     def load_data(self):
         """Carrega todos os arquivos CSV do Nubank"""
         csv_files = list(Path(self.data_folder).glob("Nubank_*.csv"))
@@ -71,7 +76,8 @@ class NubankAnalyzer:
         end_date = expenses["date"].max()
         total_expenses = expenses["amount"].sum()
 
-        insights.append("=== ANÁLISE DETALHADA DE GASTOS ===\n")
+        # Usar o método add_section para organizar melhor
+        self.add_section("ANÁLISE DETALHADA DE GASTOS", insights)
         insights.append(
             f"Período: {start_date.strftime('%d/%m/%Y')} a {end_date.strftime('%d/%m/%Y')}"
         )
@@ -87,7 +93,7 @@ class NubankAnalyzer:
         insights.append("")
 
         # Análise de percentis
-        insights.append("=== ANÁLISE DE PERCENTIS ===")
+        self.add_section("ANÁLISE DE PERCENTIS", insights)
         percentis = [10, 25, 50, 75, 90, 95, 99]
         for p in percentis:
             valor = expenses["amount"].quantile(p / 100)
@@ -95,9 +101,7 @@ class NubankAnalyzer:
         insights.append("")
 
         # Top estabelecimentos (análise principal)
-        insights.append(
-            "=== TOP 10 ESTABELECIMENTOS POR MESES ATIVOS (MESES ATIVOS > 1) ==="
-        )
+        self.add_section("TOP 10 ESTABELECIMENTOS POR MESES ATIVOS (MESES ATIVOS > 1)", insights)
 
         # Adicionar coluna de mês
         expenses["month"] = expenses["date"].dt.to_period("M")
@@ -177,7 +181,7 @@ class NubankAnalyzer:
             insights.append(f"     Dias com gasto: {row['Dias_Com_Gasto']:.0f}")
 
         # Análise temporal
-        insights.append("\n=== ANÁLISE TEMPORAL DE GASTOS ===")
+        self.add_section("ANÁLISE TEMPORAL DE GASTOS", insights)
 
         # Por mês
         monthly_expenses = (
@@ -222,7 +226,7 @@ class NubankAnalyzer:
                 )
 
         # Análise de frequência
-        insights.append("\n=== ANÁLISE DE FREQUÊNCIA ===")
+        self.add_section("ANÁLISE DE FREQUÊNCIA", insights)
         expense_frequency = expenses.groupby(expenses["date"].dt.date).size()
         insights.append(
             f"Dias com gastos: {len(expense_frequency)} de {(end_date - start_date).days + 1}"
@@ -236,7 +240,7 @@ class NubankAnalyzer:
         )
 
         # Distribuição de valores
-        insights.append("\n=== DISTRIBUIÇÃO DE VALORES ===")
+        self.add_section("DISTRIBUIÇÃO DE VALORES", insights)
         value_ranges = [
             (0, 10, "Até R$ 10"),
             (10, 25, "R$ 10-25"),
@@ -268,7 +272,7 @@ class NubankAnalyzer:
             )
 
         # Estatísticas avançadas
-        insights.append("\n=== ESTATÍSTICAS AVANÇADAS ===")
+        self.add_section("ESTATÍSTICAS AVANÇADAS", insights)
         insights.append(f"Desvio padrão: R$ {expenses['amount'].std():.2f}")
         insights.append(f"Variância: R$ {expenses['amount'].var():.2f}")
         insights.append(
@@ -281,7 +285,7 @@ class NubankAnalyzer:
         )
 
         # Métricas estatísticas comportamentais
-        insights.append("\n=== MÉTRICAS ESTATÍSTICAS COMPORTAMENTAIS ===")
+        self.add_section("MÉTRICAS ESTATÍSTICAS COMPORTAMENTAIS", insights)
 
         # Distribuição de transações de baixo valor
         small_purchases = len(expenses[expenses["amount"] <= 10])
@@ -366,7 +370,7 @@ class NubankAnalyzer:
         )
 
         # Análise detalhada de outliers
-        insights.append("\n=== ANÁLISE DETALHADA DE OUTLIERS ===")
+        self.add_section("ANÁLISE DETALHADA DE OUTLIERS", insights)
 
         # Outliers por método IQR
         Q1 = expenses["amount"].quantile(0.25)
@@ -440,7 +444,7 @@ class NubankAnalyzer:
         )
 
         # Análise de séries temporais
-        insights.append("\n=== ANÁLISE DE SÉRIES TEMPORAIS ===")
+        self.add_section("ANÁLISE DE SÉRIES TEMPORAIS", insights)
 
         # Análise de sazonalidade horária
         if "time" in expenses.columns:
@@ -483,7 +487,7 @@ class NubankAnalyzer:
         )
 
         # Análise de distribuição de valores
-        insights.append("\n=== ANÁLISE DE DISTRIBUIÇÃO DE VALORES ===")
+        self.add_section("ANÁLISE DE DISTRIBUIÇÃO DE VALORES", insights)
 
         # Coeficiente de assimetria (skewness)
         median_vs_mean = (expenses["amount"].median() / expenses["amount"].mean()) * 100
@@ -520,7 +524,7 @@ class NubankAnalyzer:
             )
 
         # Análise de tendências temporais
-        insights.append("\n=== ANÁLISE DE TENDÊNCIAS TEMPORAIS ===")
+        self.add_section("ANÁLISE DE TENDÊNCIAS TEMPORAIS", insights)
 
         # Coeficiente de tendência por estabelecimento
         merchant_trends = []
@@ -555,7 +559,7 @@ class NubankAnalyzer:
         )
 
         # Métricas de previsibilidade estatística
-        insights.append("\n=== MÉTRICAS DE PREVISIBILIDADE ESTATÍSTICA ===")
+        self.add_section("MÉTRICAS DE PREVISIBILIDADE ESTATÍSTICA", insights)
 
         # Coeficiente de previsibilidade por estabelecimento
         predictable_merchants = 0
@@ -591,7 +595,7 @@ class NubankAnalyzer:
         total_profits = self.df_profits["amount"].sum()
         net_balance = total_profits - total_expenses
 
-        insights.append("=== ANÁLISE COMPLETA DE TRANSAÇÕES ===\n")
+        self.add_section("ANÁLISE COMPLETA DE TRANSAÇÕES", insights)
         insights.append(
             f"Período: {start_date.strftime('%d/%m/%Y')} a {end_date.strftime('%d/%m/%Y')}"
         )
@@ -601,7 +605,7 @@ class NubankAnalyzer:
         insights.append(f"Recebimentos: {len(self.df_profits):,} transações")
         insights.append("")
 
-        insights.append("=== RESUMO FINANCEIRO ===")
+        self.add_section("RESUMO FINANCEIRO", insights)
         insights.append(f"Total de gastos: R$ {total_expenses:,.2f}")
         insights.append(f"Total de recebimentos: R$ {total_profits:,.2f}")
         insights.append(f"Saldo líquido: R$ {net_balance:,.2f}")
@@ -612,7 +616,7 @@ class NubankAnalyzer:
         insights.append("")
 
         # Análise de fluxo de caixa
-        insights.append("=== ANÁLISE DE FLUXO DE CAIXA ===")
+        self.add_section("ANÁLISE DE FLUXO DE CAIXA", insights)
 
         # Por mês
         monthly_expenses = self.df_expenses.groupby(
@@ -634,7 +638,7 @@ class NubankAnalyzer:
             insights.append(f"    Saldo: R$ {balance_month:,.2f}")
 
         # Análise de tendências
-        insights.append("\n=== ANÁLISE DE TENDÊNCIAS ===")
+        self.add_section("ANÁLISE DE TENDÊNCIAS", insights)
 
         if len(monthly_expenses) > 1:
             expense_trend = monthly_expenses.iloc[-1] - monthly_expenses.iloc[0]
@@ -651,7 +655,7 @@ class NubankAnalyzer:
             )
 
         # Análise de estabelecimentos mais frequentes
-        insights.append("\n=== ESTABELECIMENTOS MAIS FREQUENTES ===")
+        self.add_section("ESTABELECIMENTOS MAIS FREQUENTES", insights)
 
         # Top 10 estabelecimentos por frequência
         most_frequent = self.df["title"].value_counts().head(10)
@@ -672,7 +676,7 @@ class NubankAnalyzer:
             insights.append(f"{i:2d}. {merchant}: R$ {value:,.2f}")
 
         # Métricas de saúde financeira
-        insights.append("\n=== MÉTRICAS DE SAÚDE FINANCEIRA ===")
+        self.add_section("MÉTRICAS DE SAÚDE FINANCEIRA", insights)
 
         # Taxa de poupança
         if total_profits > 0:
@@ -701,7 +705,7 @@ class NubankAnalyzer:
             )
 
         # Análise de sazonalidade
-        insights.append("\n=== ANÁLISE DE SAZONALIDADE ===")
+        self.add_section("ANÁLISE DE SAZONALIDADE", insights)
 
         # Por dia da semana
         self.df["day_of_week"] = self.df["date"].dt.day_name()
@@ -731,7 +735,7 @@ class NubankAnalyzer:
                 continue
 
         # Métricas de eficiência estatística
-        insights.append("\n=== MÉTRICAS DE EFICIÊNCIA ESTATÍSTICA ===")
+        self.add_section("MÉTRICAS DE EFICIÊNCIA ESTATÍSTICA", insights)
 
         # Taxa de gastos temporal
         total_days = (end_date - start_date).days + 1
@@ -783,7 +787,7 @@ class NubankAnalyzer:
         insights.append(f"Coeficiente de sazonalidade temporal: {weekend_ratio:.1f}%")
 
         # Métricas de risco estatístico
-        insights.append("\n=== MÉTRICAS DE RISCO ESTATÍSTICO ===")
+        self.add_section("MÉTRICAS DE RISCO ESTATÍSTICO", insights)
 
         # Desvio padrão temporal
         daily_volatility = (
@@ -810,7 +814,7 @@ class NubankAnalyzer:
         )
 
         # Métricas de otimização matemática
-        insights.append("\n=== MÉTRICAS DE OTIMIZAÇÃO MATEMÁTICA ===")
+        self.add_section("MÉTRICAS DE OTIMIZAÇÃO MATEMÁTICA", insights)
 
         # Função de economia por consolidação
         small_transactions = self.df_expenses[self.df_expenses["amount"] <= 20]
@@ -830,7 +834,7 @@ class NubankAnalyzer:
         )
 
         # Análise de clustering por categorias implícitas
-        insights.append("\n=== ANÁLISE DE CLUSTERING POR CATEGORIAS IMPLÍCITAS ===")
+        self.add_section("ANÁLISE DE CLUSTERING POR CATEGORIAS IMPLÍCITAS", insights)
 
         # Identificar padrões por palavras-chave
         keywords = {
@@ -855,7 +859,7 @@ class NubankAnalyzer:
                 )
 
         # Métricas de estabilidade financeira
-        insights.append("\n=== MÉTRICAS DE ESTABILIDADE FINANCEIRA ===")
+        self.add_section("MÉTRICAS DE ESTABILIDADE FINANCEIRA", insights)
 
         # Coeficiente de estabilidade temporal
         monthly_totals = self.df_expenses.groupby(
