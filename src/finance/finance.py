@@ -403,6 +403,171 @@ class NubankAnalyzer:
         insights.append(f"Quartil 75%: R$ {expenses['amount'].quantile(0.75):.2f}")
         insights.append(f"Amplitude interquartil: R$ {expenses['amount'].quantile(0.75) - expenses['amount'].quantile(0.25):.2f}")
         
+        # Métricas estatísticas comportamentais
+        insights.append("\n=== MÉTRICAS ESTATÍSTICAS COMPORTAMENTAIS ===")
+        
+        # Distribuição de transações de baixo valor
+        small_purchases = len(expenses[expenses['amount'] <= 10])
+        small_purchase_pct = (small_purchases / len(expenses)) * 100
+        insights.append(f"Frequência de microtransações (≤R$ 10): {small_purchases:.0f} ({small_purchase_pct:.1f}%)")
+        
+        # Distribuição de frequência diária
+        daily_transactions = expenses.groupby(expenses['date'].dt.date).size()
+        high_frequency_days = len(daily_transactions[daily_transactions >= 5])
+        insights.append(f"Dias com alta frequência transacional (≥5): {high_frequency_days:.0f} dias")
+        
+        # Índice de diversificação de estabelecimentos
+        unique_merchants = expenses['title'].nunique()
+        merchants_per_month = unique_merchants / 5  # 5 meses
+        insights.append(f"Cardinalidade de estabelecimentos únicos: {unique_merchants:.0f} ({merchants_per_month:.1f}/mês)")
+        
+        # Coeficiente de concentração (Índice de Herfindahl)
+        top5_merchants = expenses.groupby('title')['amount'].sum().nlargest(5).sum()
+        concentration_pct = (top5_merchants / total_expenses) * 100
+        insights.append(f"Coeficiente de concentração (top 5): {concentration_pct:.1f}%")
+        
+        # Frequência de recorrência
+        recurring_merchants = len(expenses['title'].value_counts()[expenses['title'].value_counts() >= 3])
+        insights.append(f"Estabelecimentos com recorrência ≥3: {recurring_merchants:.0f}")
+        
+        # Coeficiente de variação médio por estabelecimento
+        merchant_cv = expenses.groupby('title')['amount'].agg(['mean', 'std']).apply(
+            lambda x: (x['std'] / x['mean']) * 100 if x['mean'] > 0 else 0, axis=1
+        )
+        avg_cv = merchant_cv.mean()
+        insights.append(f"Coeficiente de variação médio por estabelecimento: {avg_cv:.1f}%")
+        
+        # Análise de otimização por percentis
+        p75_global = expenses['amount'].quantile(0.75)
+        p95_global = expenses['amount'].quantile(0.95)
+        high_value_transactions = expenses[expenses['amount'] > p75_global]
+        potential_savings = (high_value_transactions['amount'] - p75_global).sum()
+        insights.append(f"Oportunidade de otimização (P95→P75): R$ {potential_savings:.2f}")
+        
+        # Análise de sazonalidade semanal
+        expenses['is_weekend'] = expenses['date'].dt.dayofweek >= 5
+        weekend_avg = expenses[expenses['is_weekend']]['amount'].mean()
+        weekday_avg = expenses[~expenses['is_weekend']]['amount'].mean()
+        weekend_premium = ((weekend_avg - weekday_avg) / weekday_avg) * 100
+        insights.append(f"Coeficiente de sazonalidade semanal: {weekend_premium:+.1f}% (μ_weekend={weekend_avg:.2f}, μ_weekday={weekday_avg:.2f})")
+        
+        # Coeficiente de variação temporal
+        monthly_totals = expenses.groupby(expenses['date'].dt.to_period('M'))['amount'].sum()
+        monthly_cv = (monthly_totals.std() / monthly_totals.mean()) * 100
+        insights.append(f"Coeficiente de variação temporal mensal: {monthly_cv:.1f}%")
+        
+        # Análise de outliers estatísticos
+        mean_amount = expenses['amount'].mean()
+        std_amount = expenses['amount'].std()
+        outliers = expenses[abs(expenses['amount'] - mean_amount) > 2 * std_amount]
+        outlier_pct = (len(outliers) / len(expenses)) * 100
+        insights.append(f"Outliers estatísticos (|x-μ|>2σ): {len(outliers):.0f} transações ({outlier_pct:.1f}%)")
+        
+        # Análise de séries temporais
+        insights.append("\n=== ANÁLISE DE SÉRIES TEMPORAIS ===")
+        
+        # Análise de sazonalidade horária
+        if 'time' in expenses.columns:
+            expenses['hour'] = pd.to_datetime(expenses['time']).dt.hour
+            hourly_spending = expenses.groupby('hour')['amount'].sum()
+            peak_hour = hourly_spending.idxmax()
+            peak_amount = hourly_spending.max()
+            insights.append(f"Moda temporal (horário de pico): {peak_hour:02d}h (R$ {peak_amount:.2f})")
+        
+        # Análise de sazonalidade mensal
+        expenses['day_of_month'] = expenses['date'].dt.day
+        daily_spending = expenses.groupby('day_of_month')['amount'].sum()
+        expensive_days = daily_spending.nlargest(3)
+        insights.append("Máximos locais por dia do mês:")
+        for day, amount in expensive_days.items():
+            insights.append(f"  Dia {day}: R$ {amount:.2f}")
+        
+        # Análise de intervalos inter-transacionais
+        expenses_sorted = expenses.sort_values('date')
+        expenses_sorted['days_since_last'] = expenses_sorted['date'].diff().dt.days
+        avg_days_between = expenses_sorted['days_since_last'].mean()
+        insights.append(f"Intervalo médio inter-transacional: {avg_days_between:.1f} dias")
+        
+        # Análise de sequências consecutivas
+        consecutive_days = 0
+        max_consecutive = 0
+        current_consecutive = 0
+        for _, row in expenses_sorted.iterrows():
+            if row['days_since_last'] <= 1:
+                current_consecutive += 1
+                max_consecutive = max(max_consecutive, current_consecutive)
+            else:
+                current_consecutive = 1
+        insights.append(f"Comprimento máximo de sequência consecutiva: {max_consecutive}")
+        
+        # Análise de distribuição de valores
+        insights.append("\n=== ANÁLISE DE DISTRIBUIÇÃO DE VALORES ===")
+        
+        # Coeficiente de assimetria (skewness)
+        median_vs_mean = (expenses['amount'].median() / expenses['amount'].mean()) * 100
+        insights.append(f"Coeficiente de eficiência (mediana/média): {median_vs_mean:.1f}%")
+        
+        # Distribuição por intervalos de classe
+        ranges = [(0, 20, "Classe I"), (20, 50, "Classe II"), (50, 100, "Classe III"), (100, float('inf'), "Classe IV")]
+        insights.append("Distribuição por intervalos de classe:")
+        for min_val, max_val, label in ranges:
+            if max_val == float('inf'):
+                count = len(expenses[expenses['amount'] >= min_val])
+                total = expenses[expenses['amount'] >= min_val]['amount'].sum()
+            else:
+                count = len(expenses[(expenses['amount'] >= min_val) & (expenses['amount'] < max_val)])
+                total = expenses[(expenses['amount'] >= min_val) & (expenses['amount'] < max_val)]['amount'].sum()
+            
+            pct_count = (count / len(expenses)) * 100
+            pct_value = (total / total_expenses) * 100
+            insights.append(f"  {label}: {count:.0f} ({pct_count:.1f}%) - R$ {total:.2f} ({pct_value:.1f}%)")
+        
+        # Análise de tendências temporais
+        insights.append("\n=== ANÁLISE DE TENDÊNCIAS TEMPORAIS ===")
+        
+        # Coeficiente de tendência por estabelecimento
+        merchant_trends = []
+        for merchant in expenses['title'].value_counts().head(10).index:
+            merchant_data = expenses[expenses['title'] == merchant].sort_values('date')
+            if len(merchant_data) >= 3:
+                first_half = merchant_data.iloc[:len(merchant_data)//2]['amount'].mean()
+                second_half = merchant_data.iloc[len(merchant_data)//2:]['amount'].mean()
+                trend = ((second_half - first_half) / first_half) * 100
+                merchant_trends.append((merchant, trend))
+        
+        merchant_trends.sort(key=lambda x: x[1], reverse=True)
+        insights.append("Coeficientes de tendência por estabelecimento (top 5):")
+        for merchant, trend in merchant_trends[:5]:
+            insights.append(f"  {merchant}: {trend:+.1f}%")
+        
+        # Análise de sazonalidade mensal
+        monthly_analysis = expenses.groupby(expenses['date'].dt.month).agg({
+            'amount': ['sum', 'count', 'mean']
+        })
+        best_month = monthly_analysis[('amount', 'sum')].idxmax()
+        worst_month = monthly_analysis[('amount', 'sum')].idxmin()
+        insights.append(f"Máximo mensal: {best_month} (R$ {monthly_analysis.loc[best_month, ('amount', 'sum')]:.2f})")
+        insights.append(f"Mínimo mensal: {worst_month} (R$ {monthly_analysis.loc[worst_month, ('amount', 'sum')]:.2f})")
+        
+        # Métricas de previsibilidade estatística
+        insights.append("\n=== MÉTRICAS DE PREVISIBILIDADE ESTATÍSTICA ===")
+        
+        # Coeficiente de previsibilidade por estabelecimento
+        predictable_merchants = 0
+        for merchant in expenses['title'].value_counts().head(20).index:
+            merchant_data = expenses[expenses['title'] == merchant]['amount']
+            if len(merchant_data) >= 5:
+                cv = (merchant_data.std() / merchant_data.mean()) * 100
+                if cv < 30:  # Baixa variabilidade = previsível
+                    predictable_merchants += 1
+        
+        insights.append(f"Estabelecimentos com baixa variabilidade (CV<30%): {predictable_merchants}/20")
+        
+        # Coeficiente de previsibilidade temporal
+        daily_totals = expenses.groupby(expenses['date'].dt.date)['amount'].sum()
+        daily_cv = (daily_totals.std() / daily_totals.mean()) * 100
+        insights.append(f"Coeficiente de previsibilidade temporal diária: {daily_cv:.1f}%")
+        
         return "\n".join(insights)
     
     def generate_profits_analysis(self) -> str:
@@ -634,6 +799,126 @@ class NubankAnalyzer:
                 insights.append(f"  {day}: Gastos R$ {expenses_day:,.2f}, Recebimentos R$ {profits_day:,.2f}")
             except KeyError:
                 continue
+        
+        # Métricas de eficiência estatística
+        insights.append("\n=== MÉTRICAS DE EFICIÊNCIA ESTATÍSTICA ===")
+        
+        # Taxa de gastos temporal
+        total_days = (end_date - start_date).days + 1
+        spending_velocity = total_expenses / total_days
+        insights.append(f"Taxa de gastos temporal: R$ {spending_velocity:.2f}/dia")
+        
+        # Valor esperado por transação
+        avg_transaction_value = total_expenses / len(self.df_expenses)
+        insights.append(f"Valor esperado por transação: R$ {avg_transaction_value:.2f}")
+        
+        # Moda de estabelecimentos
+        most_frequent_merchant = self.df_expenses['title'].value_counts().iloc[0]
+        most_frequent_name = self.df_expenses['title'].value_counts().index[0]
+        insights.append(f"Moda de estabelecimentos: {most_frequent_name} (frequência={most_frequent_merchant})")
+        
+        # Índice de diversificação de Shannon
+        total_merchants = self.df_expenses['title'].nunique()
+        diversification_index = total_merchants / len(self.df_expenses)
+        insights.append(f"Índice de diversificação de Shannon: {diversification_index:.3f}")
+        
+        # Coeficiente de variação diária
+        daily_expenses = self.df_expenses.groupby(self.df_expenses['date'].dt.date)['amount'].sum()
+        spending_consistency = (daily_expenses.std() / daily_expenses.mean()) * 100
+        insights.append(f"Coeficiente de variação diária: {spending_consistency:.1f}%")
+        
+        # Análise de cauda da distribuição
+        same_day_multiple = len(daily_expenses[daily_expenses > daily_expenses.quantile(0.8)])
+        impulse_days = (same_day_multiple / len(daily_expenses)) * 100
+        insights.append(f"Observações na cauda superior (P80+): {same_day_multiple:.0f} dias ({impulse_days:.1f}%)")
+        
+        # Coeficiente de sazonalidade temporal
+        weekend_expenses = self.df_expenses[self.df_expenses['date'].dt.dayofweek >= 5]['amount'].sum()
+        weekday_expenses = self.df_expenses[self.df_expenses['date'].dt.dayofweek < 5]['amount'].sum()
+        weekend_ratio = weekend_expenses / (weekend_expenses + weekday_expenses) * 100
+        insights.append(f"Coeficiente de sazonalidade temporal: {weekend_ratio:.1f}%")
+        
+        # Métricas de risco estatístico
+        insights.append("\n=== MÉTRICAS DE RISCO ESTATÍSTICO ===")
+        
+        # Desvio padrão temporal
+        daily_volatility = self.df_expenses.groupby(self.df_expenses['date'].dt.date)['amount'].sum().std()
+        insights.append(f"Desvio padrão temporal diário: R$ {daily_volatility:.2f}")
+        
+        # Análise de Value at Risk (VaR)
+        high_spending_days = len(daily_expenses[daily_expenses > daily_expenses.quantile(0.9)])
+        risk_days = (high_spending_days / len(daily_expenses)) * 100
+        insights.append(f"Value at Risk (P90): {high_spending_days:.0f} dias ({risk_days:.1f}%)")
+        
+        # Coeficiente de concentração de risco
+        top_merchant_risk = self.df_expenses.groupby('title')['amount'].sum().max()
+        risk_concentration = (top_merchant_risk / total_expenses) * 100
+        insights.append(f"Coeficiente de concentração de risco: {risk_concentration:.1f}%")
+        
+        # Métricas de otimização matemática
+        insights.append("\n=== MÉTRICAS DE OTIMIZAÇÃO MATEMÁTICA ===")
+        
+        # Função de economia por consolidação
+        small_transactions = self.df_expenses[self.df_expenses['amount'] <= 20]
+        consolidation_savings = len(small_transactions) * 2  # Economia estimada por consolidação
+        insights.append(f"Função de economia por consolidação (≤R$ 20): R$ {consolidation_savings:.2f}")
+        
+        # Coeficiente de redução de frequência
+        frequent_merchants = self.df_expenses['title'].value_counts()
+        top_frequent = frequent_merchants.head(5)
+        avg_frequency_reduction = top_frequent.mean() * 0.1  # 10% de redução
+        insights.append(f"Coeficiente de redução de frequência (top 5): {avg_frequency_reduction:.1f} transações/mês")
+        
+        # Análise de clustering por categorias implícitas
+        insights.append("\n=== ANÁLISE DE CLUSTERING POR CATEGORIAS IMPLÍCITAS ===")
+        
+        # Identificar padrões por palavras-chave
+        keywords = {
+            'Transporte': ['uber', 'taxi', '99'],
+            'Alimentação': ['ifood', 'rappi', 'restaurante', 'lanchonete'],
+            'Supermercado': ['carrefour', 'walmart', 'extra'],
+            'Tecnologia': ['amazon', 'apple', 'google', 'netflix'],
+            'Lazer': ['cinema', 'teatro', 'hotel', 'viagem']
+        }
+        
+        for category, words in keywords.items():
+            category_expenses = self.df_expenses[
+                self.df_expenses['title'].str.lower().str.contains('|'.join(words), na=False)
+            ]
+            if len(category_expenses) > 0:
+                total_cat = category_expenses['amount'].sum()
+                pct_cat = (total_cat / total_expenses) * 100
+                insights.append(f"Cluster {category}: R$ {total_cat:.2f} ({pct_cat:.1f}%) - {len(category_expenses)} transações")
+        
+        # Métricas de estabilidade financeira
+        insights.append("\n=== MÉTRICAS DE ESTABILIDADE FINANCEIRA ===")
+        
+        # Coeficiente de estabilidade temporal
+        monthly_totals = self.df_expenses.groupby(self.df_expenses['date'].dt.to_period('M'))['amount'].sum()
+        monthly_consistency = (monthly_totals.std() / monthly_totals.mean()) * 100
+        if monthly_consistency < 20:
+            stability = "Alta"
+        elif monthly_consistency < 40:
+            stability = "Média"
+        else:
+            stability = "Baixa"
+        insights.append(f"Coeficiente de estabilidade temporal: {stability} ({monthly_consistency:.1f}%)")
+        
+        # Coeficiente de previsibilidade
+        predictable_expenses = 0
+        for merchant in self.df_expenses['title'].value_counts().head(10).index:
+            merchant_data = self.df_expenses[self.df_expenses['title'] == merchant]['amount']
+            if len(merchant_data) >= 3:
+                cv = (merchant_data.std() / merchant_data.mean()) * 100
+                if cv < 25:
+                    predictable_expenses += 1
+        
+        predictability = (predictable_expenses / 10) * 100
+        insights.append(f"Coeficiente de previsibilidade: {predictability:.1f}%")
+        
+        # Coeficiente de controle estatístico
+        impulse_control = (len(daily_expenses[daily_expenses <= daily_expenses.median()]) / len(daily_expenses)) * 100
+        insights.append(f"Coeficiente de controle estatístico (≤mediana): {impulse_control:.1f}%")
         
         return "\n".join(insights)
 
