@@ -13,9 +13,12 @@ class NubankAnalyzer:
         self.separate_data()
 
     def add_section(self, text: str, insights: list[str]):
-        string = "\n> === " + text + " ===\n"
+        string = "\n## " + text + "\n"
         insights.append(string)
 
+    def add_bullet(self, text: str, insights: list[str]):
+        string = "\n- " + text + "\n"
+        insights.append(string)
 
     def load_data(self):
         """Carrega todos os arquivos CSV do Nubank"""
@@ -918,19 +921,19 @@ def main():
         complete_insights = analyzer.generate_complete_analysis()
 
         # Salvar em arquivos separados
-        with open("gastos_analysis.txt", "w", encoding="utf-8") as f:
+        with open("gastos_analysis.md", "w", encoding="utf-8") as f:
             f.write(expenses_insights)
 
-        with open("analise_completa.txt", "w", encoding="utf-8") as f:
+        with open("analise_completa.md", "w", encoding="utf-8") as f:
             f.write(complete_insights)
 
-        with open("gastos_analysis_no_fixed.txt", "w", encoding="utf-8") as f:
+        with open("gastos_analysis_no_fixed.md", "w", encoding="utf-8") as f:
             f.write(expenses_insights_no_fixed)
 
         print("\n" + "=" * 60)
         print("Análises salvas em:")
-        print("  - gastos_analysis.txt")
-        print("  - analise_completa.txt")
+        print("  - gastos_analysis.md")
+        print("  - analise_completa.md")
         print("=" * 60)
 
         # Mostrar resumo
