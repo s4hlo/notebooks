@@ -301,14 +301,37 @@ class NubankAnalyzer:
         insights.append("")
         
         # Top estabelecimentos (análise principal)
-        insights.append("=== TOP 30 ESTABELECIMENTOS ===")
+        insights.append("=== TOP 10 ESTABELECIMENTOS POR MESES ATIVOS (MESES ATIVOS > 1) ===")
+        
+        # Adicionar coluna de mês
+        expenses['month'] = expenses['date'].dt.to_period('M')
+        
+        # Calcular transações por estabelecimento por mês
+        monthly_transactions = expenses.groupby(['title', 'month']).size().reset_index(name='transacoes_mes')
+        
+        # Calcular média de transações por mês para cada estabelecimento
+        avg_monthly_transactions = monthly_transactions.groupby('title').agg({
+            'transacoes_mes': ['mean', 'std', 'count']
+        }).round(2)
+        
+        avg_monthly_transactions.columns = ['Media_Mensal', 'Desvio_Mensal', 'Meses_Ativos']
+        
+        # Combinar com dados gerais
         top_merchants = expenses.groupby('title').agg({
             'amount': ['sum', 'count', 'mean', 'median', 'std'],
             'date': 'nunique'
         }).round(2)
         
         top_merchants.columns = ['Total', 'Qtd_Transacoes', 'Media', 'Mediana', 'Desvio_Padrao', 'Dias_Com_Gasto']
-        top_merchants = top_merchants.sort_values('Total', ascending=False).head(30)
+        
+        # Combinar os dados
+        top_merchants = top_merchants.join(avg_monthly_transactions)
+        
+        # Filtrar apenas estabelecimentos com mais de 1 mês ativo
+        top_merchants = top_merchants[top_merchants['Meses_Ativos'] > 1]
+        
+        # Ordenar por meses ativos (mais meses primeiro)
+        top_merchants = top_merchants.sort_values('Meses_Ativos', ascending=False).head(10)
         
         for i, (merchant, row) in enumerate(top_merchants.iterrows(), 1):
             percentage = (row['Total'] / total_expenses) * 100
@@ -321,7 +344,9 @@ class NubankAnalyzer:
             
             insights.append(f"\n{i:2d}. {merchant}:")
             insights.append(f"     Total: R$ {row['Total']:,.2f} ({percentage:.1f}%)")
-            insights.append(f"     Transações: {row['Qtd_Transacoes']:.0f}")
+            insights.append(f"     Transações totais: {row['Qtd_Transacoes']:.0f}")
+            insights.append(f"     Média mensal: {row['Media_Mensal']:.1f} transações/mês")
+            insights.append(f"     Meses ativos: {row['Meses_Ativos']:.0f}")
             insights.append(f"     Valor médio: R$ {row['Media']:.2f} ({row['Desvio_Padrao']:.0f})")
             insights.append(f"     Mediana: R$ {row['Mediana']:.2f}")
             insights.append(f"     P75: R$ {p75:.2f} | P90: R$ {p90:.2f} | P95: R$ {p95:.2f}")
@@ -462,6 +487,64 @@ class NubankAnalyzer:
         outliers = expenses[abs(expenses['amount'] - mean_amount) > 2 * std_amount]
         outlier_pct = (len(outliers) / len(expenses)) * 100
         insights.append(f"Outliers estatísticos (|x-μ|>2σ): {len(outliers):.0f} transações ({outlier_pct:.1f}%)")
+        
+        # Análise detalhada de outliers
+        insights.append("\n=== ANÁLISE DETALHADA DE OUTLIERS ===")
+        
+        # Outliers por método IQR
+        Q1 = expenses['amount'].quantile(0.25)
+        Q3 = expenses['amount'].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+        
+        outliers_iqr = expenses[(expenses['amount'] < lower_bound) | (expenses['amount'] > upper_bound)]
+        insights.append(f"Outliers por IQR (Q1-1.5*IQR, Q3+1.5*IQR): {len(outliers_iqr):.0f} transações")
+        insights.append(f"Limites IQR: R$ {lower_bound:.2f} - R$ {upper_bound:.2f}")
+        
+        # Outliers por percentis
+        p99 = expenses['amount'].quantile(0.99)
+        p95 = expenses['amount'].quantile(0.95)
+        outliers_p99 = expenses[expenses['amount'] > p99]
+        outliers_p95 = expenses[expenses['amount'] > p95]
+        
+        insights.append(f"Outliers P99+ (>{p99:.2f}): {len(outliers_p99):.0f} transações")
+        insights.append(f"Outliers P95+ (>{p95:.2f}): {len(outliers_p95):.0f} transações")
+        
+        # Top 10 outliers por valor
+        top_outliers = expenses.nlargest(10, 'amount')
+        insights.append("\nTop 10 outliers por valor:")
+        for i, (_, row) in enumerate(top_outliers.iterrows(), 1):
+            z_score = (row['amount'] - mean_amount) / std_amount
+            insights.append(f"{i:2d}. {row['title']}: R$ {row['amount']:.2f} (Z-score: {z_score:.2f}) - {row['date'].strftime('%Y-%m-%d')}")
+        
+        # Análise de outliers por estabelecimento
+        insights.append("\nEstabelecimentos com mais outliers:")
+        merchant_outliers = outliers.groupby('title').size().sort_values(ascending=False).head(10)
+        for merchant, count in merchant_outliers.items():
+            merchant_data = expenses[expenses['title'] == merchant]
+            merchant_mean = merchant_data['amount'].mean()
+            merchant_std = merchant_data['amount'].std()
+            outlier_ratio = (count / len(merchant_data)) * 100
+            insights.append(f"  {merchant}: {count:.0f} outliers ({outlier_ratio:.1f}% das transações)")
+        
+        # Análise temporal de outliers
+        insights.append("\nDistribuição temporal de outliers:")
+        outliers_copy = outliers.copy()
+        outliers_copy['month'] = outliers_copy['date'].dt.to_period('M')
+        monthly_outliers = outliers_copy.groupby('month').size()
+        for month, count in monthly_outliers.items():
+            total_month = len(expenses[expenses['date'].dt.to_period('M') == month])
+            outlier_pct_month = (count / total_month) * 100
+            insights.append(f"  {month}: {count:.0f} outliers ({outlier_pct_month:.1f}% do mês)")
+        
+        # Impacto financeiro dos outliers
+        total_outlier_value = outliers['amount'].sum()
+        outlier_impact = (total_outlier_value / total_expenses) * 100
+        insights.append(f"\nImpacto financeiro dos outliers:")
+        insights.append(f"  Valor total: R$ {total_outlier_value:.2f}")
+        insights.append(f"  % do total de gastos: {outlier_impact:.1f}%")
+        insights.append(f"  Valor médio por outlier: R$ {outliers['amount'].mean():.2f}")
         
         # Análise de séries temporais
         insights.append("\n=== ANÁLISE DE SÉRIES TEMPORAIS ===")
