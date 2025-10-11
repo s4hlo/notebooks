@@ -16,12 +16,12 @@ COLORS = {
     "mountain_1": "#1e1e2e",  
     "mountain_2": "#313244",
 
-    "ground_layer_1": "#a6e3a1", 
-    "ground_layer_2": "#a6da95",
+    "ground_layer_1": "#5a6b4a",
+    "ground_layer_2": "#6b7c5a", 
     
     # Plant colors
-    "branches": "#ee99a0",  # Brown
-    "leaves": "#f5bde6",    # Pink
+    "branches": "#4a3220",  # Brown
+    "leaves": "#e8a3c7",    # Pink
 }
 
 
@@ -72,7 +72,6 @@ def render_lsystem(
     *,
     start_pos: Tuple[float, float] = (0.0, 0.0),
     heading: float = 0.0,
-    speed: int = 0,
 ) -> None:
 
     branches = COLORS["branches"]
@@ -80,7 +79,7 @@ def render_lsystem(
     screen.tracer(10)  # Atualiza a cada 10 movimentos (bem rápido)
     pen = turtle.Turtle(visible=False)
     pen.speed(0)  # Velocidade máxima
-    pen.pensize(4)
+    pen.pensize(6)
     pen.penup()
     pen.setheading(heading)
     pen.goto(*start_pos)
@@ -242,14 +241,14 @@ def details_background():
     # draw a sun on the right top
     pen.color(COLORS["sun"])
     pen.begin_fill()
-    pen.circle(100)
+    pen.circle(150)
     pen.end_fill()
     pen.penup()
     pen.goto(100, 100)
     pen.pendown()
 
     # add random stars
-    for _ in range(10):
+    for _ in range(50):
         pen.color(COLORS["stars"])
         pen.pensize(1)
         pen.begin_fill()
@@ -262,10 +261,10 @@ def details_background():
     # draw 3 layers of mountains for depth
     # Background layer (farthest)
     
-    background_heights = generate_mountain_heights(30, 200, 200)
+    background_heights = generate_mountain_heights(30, 200, 100)
     draw_mountains(pen, background_heights, base_y=-400, color=COLORS["mountain_1"])
 
-    background_heights_2 = generate_mountain_heights(30, 200, 200)
+    background_heights_2 = generate_mountain_heights(30, 200, 100)
     draw_mountains(pen, background_heights_2, base_y=-400, color=COLORS["mountain_2"])
     # Middle layer
     middle_heights = generate_mountain_heights(30, 120, 50)
@@ -284,15 +283,14 @@ wiki_plant_with_leaves = {
 
 
 iterations = 6
-seed = 42
-stochastic = False
+seed = 420
 cfg = wiki_plant_with_leaves
 
 
-generate_func = generate_stochastic_lsystem if stochastic else generate_lsystem
-args = (cfg["axiom"], cfg["rules"], iterations) + ((seed,) if stochastic else ())
-sequence = generate_func(*args)
+args = (cfg["axiom"], cfg["rules"], iterations)
+sequence = generate_lsystem(*args)
 angle_cfg = cfg["angle"]
+random.seed(seed)
 
 screen = turtle.Screen()
 screen.bgcolor(COLORS["background"])
@@ -301,10 +299,9 @@ render_lsystem(
     screen,
     sequence,
     angle=angle_cfg,
-    step=4,
-    start_pos=(-300, -300),
+    step=5,
+    start_pos=(-300, -320),
     heading=90,
-    speed=0,
 )
 
 screen.update()  # Atualiza a tela final
