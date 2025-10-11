@@ -59,8 +59,9 @@ def render_lsystem(
 
     screen = turtle.Screen()
     screen.bgcolor(background)
+    screen.tracer(10)  # Atualiza a cada 10 movimentos (bem rápido)
     pen = turtle.Turtle(visible=False)
-    pen.speed(speed)
+    pen.speed(0)  # Velocidade máxima
     pen.pensize(4)
     pen.penup()
     pen.setheading(heading)
@@ -68,7 +69,7 @@ def render_lsystem(
     pen.pendown()
 
     stack: list = []
-    current_pensize = 8
+    current_pensize = 4
     current_step = step
     leave_pensize = 4
 
@@ -148,6 +149,7 @@ def render_lsystem(
         if action:
             action(pen, angle, current_step, stack)
 
+    screen.update()  # Atualiza a tela final
     turtle.done()
 
 
@@ -198,7 +200,7 @@ basic_leaf = {
     "angle": 20,  # ângulo menor deixa a folha mais arredondada
 }
 
-iterations = 5
+iterations = 6
 seed = 42
 stochastic = False
 cfg = wiki_plant_with_leaves
@@ -211,7 +213,7 @@ angle_cfg = cfg["angle"]
 render_lsystem(
     sequence,
     angle=angle_cfg,
-    step=15,
+    step=4,
     start_pos=(-300, -300),
     heading=90,
     speed=0,
