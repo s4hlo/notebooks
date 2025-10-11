@@ -69,10 +69,17 @@ def render_lsystem(
 
     stack: list = []
     current_pensize = 8
+    current_step = step
     leave_pensize = 4
 
-    def reduction(current_pensize: int):
+    def thick_reduction(current_pensize: int):
+        return current_pensize
         return max(1, current_pensize * (0.95 - 0.02 * (current_pensize ** 0.5)))
+     
+
+    def step_reduction(current_step: int):
+        return current_step
+        return max(1, current_step * (0.95 - 0.02 * (current_step ** 0.5)))
 
 
     def act_forward(p: turtle.Turtle, a: float, st: float, _stack: list):
@@ -93,14 +100,18 @@ def render_lsystem(
 
     def act_push(p: turtle.Turtle, a: float, st: float, _stack: list):
         nonlocal current_pensize
-        _stack.append((p.position(), p.heading(), current_pensize))
-        current_pensize = reduction(current_pensize)  
+        nonlocal current_step
+        _stack.append((p.position(), p.heading(), current_pensize, current_step ))
+        current_pensize = thick_reduction(current_pensize)  
+        current_step = step_reduction(current_step)
 
     def act_pop(p: turtle.Turtle, a: float, st: float, _stack: list):
         if _stack:
             nonlocal current_pensize
-            pos, hd, old_pensize = _stack.pop()
-            current_pensize = reduction(old_pensize)
+            nonlocal current_step
+            pos, hd, old_pensize, old_step = _stack.pop()
+            current_pensize = thick_reduction(old_pensize)
+            current_step = step_reduction(old_step)
             p.penup()
             p.goto(pos)
             p.setheading(hd)
@@ -135,7 +146,7 @@ def render_lsystem(
     for ch in seq:
         action = default_actions.get(ch)
         if action:
-            action(pen, angle, step, stack)
+            action(pen, angle, current_step, stack)
 
     turtle.done()
 
