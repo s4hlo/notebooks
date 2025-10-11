@@ -69,12 +69,12 @@ def render_lsystem(
     pen.pendown()
 
     stack: list = []
-    current_pensize = 4
+    current_pensize = 10
     current_step = step
     leave_pensize = 4
 
     def thick_reduction(current_pensize: int):
-        return current_pensize
+        # return current_pensize
         return max(1, current_pensize * (0.95 - 0.02 * (current_pensize ** 0.5)))
      
 
