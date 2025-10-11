@@ -145,7 +145,71 @@ def render_lsystem(
             action(pen, angle, current_step, stack)
 
 
-def details_background(screen: turtle.Screen):
+def generate_mountain_heights(size, edge_height, max_variation=50):
+    """Generate natural mountain heights using recursive subdivision with decreasing variation"""
+    # Initialize array with None values
+    heights = [None] * size
+    
+    # Set edge heights
+    heights[0] = edge_height
+    heights[size-1] = edge_height
+    
+    # Recursive subdivision function
+    def subdivide(start_idx, end_idx, variation):
+        if end_idx - start_idx <= 1:
+            return
+        
+        mid_idx = (start_idx + end_idx) // 2
+        
+        # Calculate midpoint height with random variation
+        start_height = heights[start_idx]
+        end_height = heights[end_idx]
+        avg_height = (start_height + end_height) / 2
+        
+        # Add random variation within the threshold
+        random_variation = random.randint(-variation, variation)
+        heights[mid_idx] = int(avg_height + random_variation)
+        
+        # Recursively subdivide with reduced variation
+        new_variation = max(1, variation // 2)
+        subdivide(start_idx, mid_idx, new_variation)
+        subdivide(mid_idx, end_idx, new_variation)
+    
+    # Start subdivision
+    subdivide(0, size-1, max_variation)
+    
+    return heights
+
+
+def draw_mountains(pen, heights_list, base_y=-350, color="#2C2C2C"):
+    """Draw mountain silhouette with specified heights for each peak"""
+    pen.penup()
+    pen.goto(-700, base_y)
+    pen.pendown()
+    pen.color(color)
+    pen.pensize(2)
+    pen.begin_fill()
+    
+    num_peaks = len(heights_list)
+    
+    # Generate x positions
+    x_positions = []
+    for i in range(num_peaks):
+        x = -600 + (i * 1200 / (num_peaks - 1))
+        x_positions.append(x)
+    
+    # Draw peaks with specified heights
+    for i, x in enumerate(x_positions):
+        y = base_y + heights_list[i]
+        pen.goto(x, y)
+    
+    # Close the mountain shape
+    pen.goto(700, base_y)
+    pen.goto(-700, base_y)
+    pen.end_fill()
+
+
+def details_background():
     pen = turtle.Turtle(visible=False)
     pen.speed(0)
     pen.pensize(4)
@@ -163,8 +227,8 @@ def details_background(screen: turtle.Screen):
     pen.goto(100, 100)
     pen.pendown()
 
-    # add randow stars
-    for _ in range(100):
+    # add random stars
+    for _ in range(10):
         pen.color("#FFFFFF")
         pen.pensize(1)
         pen.begin_fill()
@@ -173,6 +237,22 @@ def details_background(screen: turtle.Screen):
         pen.penup()
         pen.goto(random.randint(-500, 500), random.randint(-500, 500))
         pen.pendown()
+    
+    # draw 3 layers of mountains for depth
+    # Background layer (farthest)
+    
+    background_heights = generate_mountain_heights(30, 200, 200)
+    draw_mountains(pen, background_heights, base_y=-400, color="#000000")
+
+    background_heights_2 = generate_mountain_heights(30, 200, 200)
+    draw_mountains(pen, background_heights_2, base_y=-400, color="#1A1A1A")
+    # Middle layer
+    middle_heights = generate_mountain_heights(30, 120, 50)
+    draw_mountains(pen, middle_heights, base_y=-400, color="#2C2C2C")
+    
+    # Foreground layer (closest)
+    foreground_heights = generate_mountain_heights(30, 80, 30)
+    draw_mountains(pen, foreground_heights, base_y=-400, color="#3A3A3A")
 
 
 wiki_plant_with_leaves = {
@@ -196,7 +276,7 @@ angle_cfg = cfg["angle"]
 screen = turtle.Screen()
 background = "#303446"
 screen.bgcolor(background)
-details_background(screen)
+details_background()
 render_lsystem(
     screen,
     sequence,
