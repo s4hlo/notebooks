@@ -68,9 +68,16 @@ def render_lsystem(
     pen.pendown()
 
     stack: list = []
+    current_pensize = 8
+    leave_pensize = 4
+
+    def reduction(current_pensize: int):
+        return max(1, current_pensize * (0.95 - 0.02 * (current_pensize ** 0.5)))
+
 
     def act_forward(p: turtle.Turtle, a: float, st: float, _stack: list):
         p.color(branches)
+        p.pensize(current_pensize)
         p.forward(st)
 
     def act_move(p: turtle.Turtle, a: float, st: float, _stack: list):
@@ -85,11 +92,15 @@ def render_lsystem(
         p.right(a)
 
     def act_push(p: turtle.Turtle, a: float, st: float, _stack: list):
-        _stack.append((p.position(), p.heading()))
+        nonlocal current_pensize
+        _stack.append((p.position(), p.heading(), current_pensize))
+        current_pensize = reduction(current_pensize)  
 
     def act_pop(p: turtle.Turtle, a: float, st: float, _stack: list):
         if _stack:
-            pos, hd = _stack.pop()
+            nonlocal current_pensize
+            pos, hd, old_pensize = _stack.pop()
+            current_pensize = reduction(old_pensize)
             p.penup()
             p.goto(pos)
             p.setheading(hd)
@@ -97,6 +108,7 @@ def render_lsystem(
 
     def draw_leaf(p: turtle.Turtle, a: float, st: float, _stack: list):
         act_push(p, a, st, _stack)
+        p.pensize(leave_pensize)
         p.color(leaves)
         p.right(45)
         p.forward(st)
@@ -106,6 +118,7 @@ def render_lsystem(
         p.forward(st)
         p.left(60)
         p.forward(st)
+        p.pensize(current_pensize)
         act_pop(p, a, st, _stack)
 
     default_actions: Dict[str, Callable[[turtle.Turtle, float, float, list], None]] = {
@@ -174,7 +187,7 @@ basic_leaf = {
     "angle": 20,  # ângulo menor deixa a folha mais arredondada
 }
 
-iterations = 4
+iterations = 5
 seed = 42
 stochastic = False
 cfg = wiki_plant_with_leaves
