@@ -261,7 +261,7 @@ def details_background():
     # draw 3 layers of mountains for depth
     # Background layer (farthest)
     
-    background_heights = generate_mountain_heights(30, 200, 100)
+    background_heights = generate_mountain_heights(30, 250, 100)
     draw_mountains(pen, background_heights, base_y=-400, color=COLORS["mountain_1"])
 
     background_heights_2 = generate_mountain_heights(30, 200, 100)
@@ -283,7 +283,7 @@ wiki_plant_with_leaves = {
 
 
 iterations = 6
-seed = 420
+seed = 421
 cfg = wiki_plant_with_leaves
 
 
