@@ -61,7 +61,7 @@ def render_lsystem(
     screen.bgcolor(background)
     pen = turtle.Turtle(visible=False)
     pen.speed(speed)
-    pen.pensize(3)
+    pen.pensize(4)
     pen.penup()
     pen.setheading(heading)
     pen.goto(*start_pos)
@@ -71,10 +71,6 @@ def render_lsystem(
 
     def act_forward(p: turtle.Turtle, a: float, st: float, _stack: list):
         p.color(branches)
-        p.forward(st)
-
-    def act_forward_leaf(p: turtle.Turtle, a: float, st: float, _stack: list):
-        p.color(leaves)
         p.forward(st)
 
     def act_move(p: turtle.Turtle, a: float, st: float, _stack: list):
@@ -99,8 +95,21 @@ def render_lsystem(
             p.setheading(hd)
             p.pendown()
 
+    def draw_leaf(p: turtle.Turtle, a: float, st: float, _stack: list):
+        act_push(p, a, st, _stack)
+        p.color(leaves)
+        p.right(45)
+        p.forward(st)
+        p.left(60)
+        p.forward(st)
+        p.left(120)
+        p.forward(st)
+        p.left(60)
+        p.forward(st)
+        act_pop(p, a, st, _stack)
+
     default_actions: Dict[str, Callable[[turtle.Turtle, float, float, list], None]] = {
-        "L": act_forward_leaf,
+        "L": draw_leaf,
         "F": act_forward,
         "G": act_forward,
         "f": act_move,
@@ -116,9 +125,6 @@ def render_lsystem(
             action(pen, angle, step, stack)
 
     turtle.done()
-
-
-# %%
 
 
 wiki_plant_stochastic = {
@@ -147,7 +153,7 @@ wiki_plant = {
 
 wiki_plant_with_leaves = {
     "axiom": "-X",
-    "rules": {"X": "F+[[X]-X]-F[-FX]+XL", "F": "FF", "L": "L[-L+L]+[+L-L]"},
+    "rules": {"X": "F+[[X]-XL]-F[-FX]+XL", "F": "FF"},
     "angle": 25,
 }
 
@@ -168,7 +174,7 @@ basic_leaf = {
     "angle": 20,  # ângulo menor deixa a folha mais arredondada
 }
 
-iterations = 5
+iterations = 4
 seed = 42
 stochastic = False
 cfg = wiki_plant_with_leaves
@@ -181,8 +187,8 @@ angle_cfg = cfg["angle"]
 render_lsystem(
     sequence,
     angle=angle_cfg,
-    step=8,
-    start_pos=(0, -300),
+    step=15,
+    start_pos=(-300, -300),
     heading=90,
     speed=0,
 )
