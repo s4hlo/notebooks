@@ -44,6 +44,7 @@ def render_l_system_iteractive(seq: List[str]):
 
 
 def render_lsystem(
+    screen: turtle.Screen,
     seq: List[str],
     angle: float,
     step: float,
@@ -53,12 +54,8 @@ def render_lsystem(
     speed: int = 0,
 ) -> None:
 
-    branches = "#ca9ee6"
-    leaves = "#a6d189"
-    background = "#303446"
-
-    screen = turtle.Screen()
-    screen.bgcolor(background)
+    branches = "#8B4513"  # Marrom
+    leaves = "#FF69B4"  # Rosa
     screen.tracer(10)  # Atualiza a cada 10 movimentos (bem rápido)
     pen = turtle.Turtle(visible=False)
     pen.speed(0)  # Velocidade máxima
@@ -75,13 +72,11 @@ def render_lsystem(
 
     def thick_reduction(current_pensize: int):
         # return current_pensize
-        return max(1, current_pensize * (0.95 - 0.02 * (current_pensize ** 0.5)))
-     
+        return max(1, current_pensize * (0.95 - 0.02 * (current_pensize**0.5)))
 
     def step_reduction(current_step: int):
         return current_step
-        return max(1, current_step * (0.95 - 0.02 * (current_step ** 0.5)))
-
+        return max(1, current_step * (0.95 - 0.02 * (current_step**0.5)))
 
     def act_forward(p: turtle.Turtle, a: float, st: float, _stack: list):
         p.color(branches)
@@ -102,8 +97,8 @@ def render_lsystem(
     def act_push(p: turtle.Turtle, a: float, st: float, _stack: list):
         nonlocal current_pensize
         nonlocal current_step
-        _stack.append((p.position(), p.heading(), current_pensize, current_step ))
-        current_pensize = thick_reduction(current_pensize)  
+        _stack.append((p.position(), p.heading(), current_pensize, current_step))
+        current_pensize = thick_reduction(current_pensize)
         current_step = step_reduction(current_step)
 
     def act_pop(p: turtle.Turtle, a: float, st: float, _stack: list):
@@ -149,33 +144,36 @@ def render_lsystem(
         if action:
             action(pen, angle, current_step, stack)
 
-    screen.update()  # Atualiza a tela final
-    turtle.done()
 
+def details_background(screen: turtle.Screen):
+    pen = turtle.Turtle(visible=False)
+    pen.speed(0)
+    pen.pensize(4)
+    pen.penup()
+    pen.setheading(90)
+    pen.goto(400, 280)
+    pen.pendown()
 
-wiki_plant_stochastic = {
-    "axiom": "-X",
-    "rules": {
-        "X": [("F-[[X]+X]+F[+FX]-X", 0.1), ("F+[[X]-X]-F[-FX]+X", 0.9)],
-        "F": [("FF", 1.0)],
-    },
-    "angle": 25,
-}
+    # add randow stars
+    for _ in range(100):
+        pen.color("#FFFFFF")
+        pen.pensize(1)
+        pen.begin_fill()
+        pen.circle(1)
+        pen.end_fill()
+        pen.penup()
+        pen.goto(random.randint(-500, 500), random.randint(-500, 500))
+        pen.pendown()
 
-sierpinski_triangle = {
-    "axiom": "F-G-G",
-    "rules": {
-        "F": "F-G+F+G-F",
-        "G": "GG",
-    },
-    "angle": 120,
-}
+    # draw a sun on the right top
+    pen.color("#FFD700")
+    pen.begin_fill()
+    pen.circle(100)
+    pen.end_fill()
+    pen.penup()
+    pen.goto(100, 100)
+    pen.pendown()
 
-wiki_plant = {
-    "axiom": "-X",
-    "rules": {"X": "F+[[X]-X]-F[-FX]+X", "F": "FF"},
-    "angle": 25,
-}
 
 wiki_plant_with_leaves = {
     "axiom": "-X",
@@ -183,22 +181,6 @@ wiki_plant_with_leaves = {
     "angle": 25,
 }
 
-
-fractal_plant = {
-    "axiom": "X",
-    "rules": {"X": "F[-X][+X]FXL", "F": "FF", "L": "L[-L+L]+[+L-L]"},
-    "angle": 25,
-}
-
-
-basic_leaf = {
-    "axiom": "L",
-    "rules": {
-        # Corpo denso e simétrico: veias curtas expandem e depois recolhem
-        "L": "LL-[-L+L+L]+[+L-L-L]"
-    },
-    "angle": 20,  # ângulo menor deixa a folha mais arredondada
-}
 
 iterations = 6
 seed = 42
@@ -210,7 +192,13 @@ generate_func = generate_stochastic_lsystem if stochastic else generate_lsystem
 args = (cfg["axiom"], cfg["rules"], iterations) + ((seed,) if stochastic else ())
 sequence = generate_func(*args)
 angle_cfg = cfg["angle"]
+
+screen = turtle.Screen()
+background = "#303446"
+screen.bgcolor(background)
+details_background(screen)
 render_lsystem(
+    screen,
     sequence,
     angle=angle_cfg,
     step=4,
@@ -218,5 +206,8 @@ render_lsystem(
     heading=90,
     speed=0,
 )
+
+screen.update()  # Atualiza a tela final
+turtle.done()
 
 # %%
