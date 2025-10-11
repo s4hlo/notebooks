@@ -3,6 +3,27 @@ import random
 import turtle
 from typing import Dict, List, Callable, Tuple, Optional
 
+# Color palette
+COLORS = {
+    # Background
+    "background": "#181825",  
+    
+    # Sky elements
+    "sun": "#f9e2af",
+    "stars": "#cdd6f4",
+    
+    # Mountain layers
+    "mountain_1": "#1e1e2e",  
+    "mountain_2": "#313244",
+
+    "ground_layer_1": "#a6e3a1", 
+    "ground_layer_2": "#a6da95",
+    
+    # Plant colors
+    "branches": "#ee99a0",  # Brown
+    "leaves": "#f5bde6",    # Pink
+}
+
 
 def generate_lsystem(axiom: str, rules: Dict[str, str], iterations: int) -> List[str]:
     s = axiom
@@ -54,8 +75,8 @@ def render_lsystem(
     speed: int = 0,
 ) -> None:
 
-    branches = "#8B4513"  # Marrom
-    leaves = "#FF69B4"  # Rosa
+    branches = COLORS["branches"]
+    leaves = COLORS["leaves"]
     screen.tracer(10)  # Atualiza a cada 10 movimentos (bem rápido)
     pen = turtle.Turtle(visible=False)
     pen.speed(0)  # Velocidade máxima
@@ -219,7 +240,7 @@ def details_background():
     pen.pendown()
 
     # draw a sun on the right top
-    pen.color("#FFD700")
+    pen.color(COLORS["sun"])
     pen.begin_fill()
     pen.circle(100)
     pen.end_fill()
@@ -229,7 +250,7 @@ def details_background():
 
     # add random stars
     for _ in range(10):
-        pen.color("#FFFFFF")
+        pen.color(COLORS["stars"])
         pen.pensize(1)
         pen.begin_fill()
         pen.circle(1)
@@ -242,17 +263,17 @@ def details_background():
     # Background layer (farthest)
     
     background_heights = generate_mountain_heights(30, 200, 200)
-    draw_mountains(pen, background_heights, base_y=-400, color="#000000")
+    draw_mountains(pen, background_heights, base_y=-400, color=COLORS["mountain_1"])
 
     background_heights_2 = generate_mountain_heights(30, 200, 200)
-    draw_mountains(pen, background_heights_2, base_y=-400, color="#1A1A1A")
+    draw_mountains(pen, background_heights_2, base_y=-400, color=COLORS["mountain_2"])
     # Middle layer
     middle_heights = generate_mountain_heights(30, 120, 50)
-    draw_mountains(pen, middle_heights, base_y=-400, color="#2C2C2C")
+    draw_mountains(pen, middle_heights, base_y=-400, color=COLORS["ground_layer_1"])
     
     # Foreground layer (closest)
     foreground_heights = generate_mountain_heights(30, 80, 30)
-    draw_mountains(pen, foreground_heights, base_y=-400, color="#3A3A3A")
+    draw_mountains(pen, foreground_heights, base_y=-400, color=COLORS["ground_layer_2"])
 
 
 wiki_plant_with_leaves = {
@@ -274,8 +295,7 @@ sequence = generate_func(*args)
 angle_cfg = cfg["angle"]
 
 screen = turtle.Screen()
-background = "#303446"
-screen.bgcolor(background)
+screen.bgcolor(COLORS["background"])
 details_background()
 render_lsystem(
     screen,
