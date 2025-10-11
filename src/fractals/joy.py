@@ -154,6 +154,15 @@ def details_background(screen: turtle.Screen):
     pen.goto(400, 280)
     pen.pendown()
 
+    # draw a sun on the right top
+    pen.color("#FFD700")
+    pen.begin_fill()
+    pen.circle(100)
+    pen.end_fill()
+    pen.penup()
+    pen.goto(100, 100)
+    pen.pendown()
+
     # add randow stars
     for _ in range(100):
         pen.color("#FFFFFF")
@@ -164,15 +173,6 @@ def details_background(screen: turtle.Screen):
         pen.penup()
         pen.goto(random.randint(-500, 500), random.randint(-500, 500))
         pen.pendown()
-
-    # draw a sun on the right top
-    pen.color("#FFD700")
-    pen.begin_fill()
-    pen.circle(100)
-    pen.end_fill()
-    pen.penup()
-    pen.goto(100, 100)
-    pen.pendown()
 
 
 wiki_plant_with_leaves = {
