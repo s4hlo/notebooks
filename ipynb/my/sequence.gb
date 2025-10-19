@@ -1,0 +1,417 @@
+LOCUS       NP_004326                180 aa            linear   PRI 11-DEC-2020
+DEFINITION  bone marrow stromal antigen 2 precursor [Homo sapiens].
+ACCESSION   NP_004326
+VERSION     NP_004326.1
+DBSOURCE    REFSEQ: accession NM_004335.4
+KEYWORDS    RefSeq; MANE Select.
+SOURCE      Homo sapiens (human)
+  ORGANISM  Homo sapiens
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Mammalia; Eutheria; Euarchontoglires; Primates; Haplorrhini;
+            Catarrhini; Hominidae; Homo.
+REFERENCE   1  (residues 1 to 180)
+  AUTHORS   Umviligihozo G, Cobarrubias KD, Chandrarathna S, Jin SW, Reddy N,
+            Byakwaga H, Muzoora C, Bwana MB, Lee GQ, Hunt PW, Martin JN, Brumme
+            CJ, Bangsberg DR, Karita E, Allen S, Hunter E, Ndung'u T, Brumme ZL
+            and Brockman MA.
+  TITLE     Differential Vpu-Mediated CD4 and Tetherin Downregulation Functions
+            among Major HIV-1 Group M Subtypes
+  JOURNAL   J Virol 94 (14), e00293-20 (2020)
+   PUBMED   32376625
+  REMARK    GeneRIF: Differential Vpu-Mediated CD4 and Tetherin Downregulation
+            Functions among Major HIV-1 Group M Subtypes.
+            Publication Status: Online-Only
+REFERENCE   2  (residues 1 to 180)
+  AUTHORS   Zadeh VR, Urata S, Sakaguchi M and Yasuda J.
+  TITLE     Human BST-2/tetherin inhibits Junin virus release from host cells
+            and its inhibition is partially counteracted by viral nucleoprotein
+  JOURNAL   J Gen Virol 101 (6), 573-586 (2020)
+   PUBMED   32375950
+  REMARK    GeneRIF: Human BST-2/tetherin inhibits Junin virus release from
+            host cells and its inhibition is partially counteracted by viral
+            nucleoprotein.
+REFERENCE   3  (residues 1 to 180)
+  AUTHORS   Xu X, Wang Y, Xue F, Guan E, Tian F, Xu J and Zhang H.
+  TITLE     BST2 Promotes Tumor Growth via Multiple Pathways in Hepatocellular
+            Carcinoma
+  JOURNAL   Cancer Invest 38 (5), 329-337 (2020)
+   PUBMED   32427495
+  REMARK    GeneRIF: HCC patients with higher BST2 expression were more
+            predisposed to poorer clinical symptoms and unfavorable prognosis.
+REFERENCE   4  (residues 1 to 180)
+  AUTHORS   Luck K, Kim DK, Lambourne L, Spirohn K, Begg BE, Bian W, Brignall
+            R, Cafarelli T, Campos-Laborie FJ, Charloteaux B, Choi D, Cote AG,
+            Daley M, Deimling S, Desbuleux A, Dricot A, Gebbia M, Hardy MF,
+            Kishore N, Knapp JJ, Kovacs IA, Lemmens I, Mee MW, Mellor JC,
+            Pollis C, Pons C, Richardson AD, Schlabach S, Teeking B, Yadav A,
+            Babor M, Balcha D, Basha O, Bowman-Colin C, Chin SF, Choi SG,
+            Colabella C, Coppin G, D'Amata C, De Ridder D, De Rouck S,
+            Duran-Frigola M, Ennajdaoui H, Goebels F, Goehring L, Gopal A,
+            Haddad G, Hatchi E, Helmy M, Jacob Y, Kassa Y, Landini S, Li R, van
+            Lieshout N, MacWilliams A, Markey D, Paulson JN, Rangarajan S,
+            Rasla J, Rayhan A, Rolland T, San-Miguel A, Shen Y, Sheykhkarimli
+            D, Sheynkman GM, Simonovsky E, Tasan M, Tejeda A, Tropepe V,
+            Twizere JC, Wang Y, Weatheritt RJ, Weile J, Xia Y, Yang X,
+            Yeger-Lotem E, Zhong Q, Aloy P, Bader GD, De Las Rivas J, Gaudet S,
+            Hao T, Rak J, Tavernier J, Hill DE, Vidal M, Roth FP and Calderwood
+            MA.
+  TITLE     A reference map of the human binary protein interactome
+  JOURNAL   Nature 580 (7803), 402-408 (2020)
+   PUBMED   32296183
+REFERENCE   5  (residues 1 to 180)
+  AUTHORS   Yao W, Yoshida T, Hashimoto S, Takeuchi H, Strebel K and Yamaoka S.
+  TITLE     Vpu of a Simian Immunodeficiency Virus Isolated from Greater
+            Spot-Nosed Monkey Antagonizes Human BST-2 via Two AxxxxxxxW Motifs
+  JOURNAL   J Virol 94 (2), e01669-19 (2020)
+   PUBMED   31666374
+  REMARK    GeneRIF: SIVgsn71 Vpu requires two AxxxxxxxW (A(22)W(30) and
+            A(25)W(33)) motifs to antagonize human BST-2, suggesting an
+            as-yet-undefined way that SIVgsn71 Vpu works against human BST-2.
+            These results imply an evolutionary impact of primate BST-2 on
+            lentiviral Vpu.
+            Publication Status: Online-Only
+REFERENCE   6  (residues 1 to 180)
+  AUTHORS   Vidal-Laliena M, Romero X, March S, Requena V, Petriz J and Engel
+            P.
+  TITLE     Characterization of antibodies submitted to the B cell section of
+            the 8th Human Leukocyte Differentiation Antigens Workshop by flow
+            cytometry and immunohistochemistry
+  JOURNAL   Cell Immunol 236 (1-2), 6-16 (2005)
+   PUBMED   16157322
+REFERENCE   7  (residues 1 to 180)
+  AUTHORS   Matsuda A, Suzuki Y, Honda G, Muramatsu S, Matsuzaki O, Nagano Y,
+            Doi T, Shimotohno K, Harada T, Nishida E, Hayashi H and Sugano S.
+  TITLE     Large-scale identification and characterization of human genes that
+            activate NF-kappaB and MAPK signaling pathways
+  JOURNAL   Oncogene 22 (21), 3307-3318 (2003)
+   PUBMED   12761501
+REFERENCE   8  (residues 1 to 180)
+  AUTHORS   Ohtomo T, Sugamata Y, Ozaki Y, Ono K, Yoshimura Y, Kawai S,
+            Koishihara Y, Ozaki S, Kosaka M, Hirano T and Tsuchiya M.
+  TITLE     Molecular cloning and characterization of a surface antigen
+            preferentially overexpressed on multiple myeloma cells
+  JOURNAL   Biochem Biophys Res Commun 258 (3), 583-591 (1999)
+   PUBMED   10329429
+REFERENCE   9  (residues 1 to 180)
+  AUTHORS   Furuya Y, Takasawa S, Yonekura H, Tanaka T, Takahara J and Okamoto
+            H.
+  TITLE     Cloning of a cDNA encoding rat bone marrow stromal cell antigen 1
+            (BST-1) from the islets of Langerhans
+  JOURNAL   Gene 165 (2), 329-330 (1995)
+   PUBMED   8522202
+REFERENCE   10 (residues 1 to 180)
+  AUTHORS   Ishikawa J, Kaisho T, Tomizawa H, Lee BO, Kobune Y, Inazawa J,
+            Oritani K, Itoh M, Ochi T, Ishihara K et al.
+  TITLE     Molecular cloning and chromosomal mapping of a bone marrow stromal
+            cell surface gene, BST2, that may be involved in pre-B-cell growth
+  JOURNAL   Genomics 26 (3), 527-534 (1995)
+   PUBMED   7607676
+COMMENT     REVIEWED REFSEQ: This record has been curated by NCBI staff. The
+            reference sequence was derived from AC010319.10.
+            
+            Summary: Bone marrow stromal cells are involved in the growth and
+            development of B-cells. The specific function of the protein
+            encoded by the bone marrow stromal cell antigen 2 is undetermined;
+            however, this protein may play a role in pre-B-cell growth and in
+            rheumatoid arthritis. [provided by RefSeq, Jul 2008].
+            
+            Publication Note:  This RefSeq record includes a subset of the
+            publications that are available for this gene. Please see the Gene
+            record to access additional publications.
+            
+            ##Evidence-Data-START##
+            Transcript exon combination :: SRR1163655.37787.1,
+                                           SRR1163655.21422.1 [ECO:0000332]
+            RNAseq introns              :: single sample supports all introns
+                                           SAMEA1968540, SAMEA1968968
+                                           [ECO:0000348]
+            ##Evidence-Data-END##
+            
+            ##RefSeq-Attributes-START##
+            MANE Ensembl match     :: ENST00000252593.7/ ENSP00000252593.6
+            RefSeq Select criteria :: based on single protein-coding transcript
+            ##RefSeq-Attributes-END##
+FEATURES             Location/Qualifiers
+     source          1..180
+                     /organism="Homo sapiens"
+                     /db_xref="taxon:9606"
+                     /chromosome="19"
+                     /map="19p13.11"
+     Protein         1..180
+                     /product="bone marrow stromal antigen 2 precursor"
+                     /note="NPC-A-7; BST-2; HM1.24 antigen; bone marrow stromal
+                     antigen 2"
+                     /calculated_mol_wt=19638
+     mat_peptide     1..161
+                     /product="Bone marrow stromal antigen 2.
+                     /id=PRO_0000065005"
+                     /note="propagated from UniProtKB/Swiss-Prot (Q10589.1)"
+                     /calculated_mol_wt=17896
+     Site            21..48
+                     /site_type="transmembrane region"
+                     /note="propagated from UniProtKB/Swiss-Prot (Q10589.1)"
+     Region          49..133
+                     /region_name="BST2"
+                     /note="Bone marrow stromal antigen 2; pfam16716"
+                     /db_xref="CDD:318842"
+     Site            65
+                     /site_type="glycosylation"
+                     /note="N-linked (GlcNAc...) asparagine.
+                     /evidence=ECO:0000269|PubMed:19159218,
+                     ECO:0000269|PubMed:19349973, ECO:0000269|PubMed:19737401,
+                     ECO:0000269|PubMed:19879838; propagated from
+                     UniProtKB/Swiss-Prot (Q10589.1)"
+     Site            92
+                     /site_type="glycosylation"
+                     /note="N-linked (GlcNAc...) asparagine.
+                     /evidence=ECO:0000269|PubMed:19737401,
+                     ECO:0000269|PubMed:19879838; propagated from
+                     UniProtKB/Swiss-Prot (Q10589.1)"
+     CDS             1..180
+                     /gene="BST2"
+                     /gene_synonym="CD317; TETHERIN"
+                     /coded_by="NM_004335.4:56..598"
+                     /db_xref="CCDS:CCDS12358.1"
+                     /db_xref="GeneID:684"
+                     /db_xref="HGNC:HGNC:1119"
+                     /db_xref="MIM:600534"
+ORIGIN      
+        1 mastsydycr vpmedgdkrc klllgigilv lliivilgvp liiftikans eacrdglrav
+       61 mecrnvthll qqelteaqkg fqdveaqaat cnhtvmalma sldaekaqgq kkveelegei
+      121 ttlnhklqda saeverlrre nqvlsvriad kkyypssqds ssaaapqlli vllglsallq
+//
+
+LOCUS       NP_001266560             185 aa            linear   PRI 29-JUN-2020
+DEFINITION  bone marrow stromal antigen 2 [Gorilla gorilla].
+ACCESSION   NP_001266560 XP_004060314 XP_004060315
+VERSION     NP_001266560.1
+DBSOURCE    REFSEQ: accession NM_001279631.1
+KEYWORDS    RefSeq.
+SOURCE      Gorilla gorilla (western gorilla)
+  ORGANISM  Gorilla gorilla
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Mammalia; Eutheria; Euarchontoglires; Primates; Haplorrhini;
+            Catarrhini; Hominidae; Gorilla.
+REFERENCE   1  (residues 1 to 185)
+  AUTHORS   Lim ES, Malik HS and Emerman M.
+  TITLE     Ancient adaptive evolution of tetherin shaped the functions of Vpu
+            and Nef in human immunodeficiency virus and primate lentiviruses
+  JOURNAL   J. Virol. 84 (14), 7124-7134 (2010)
+   PUBMED   20444900
+REFERENCE   2  (residues 1 to 185)
+  AUTHORS   Sauter D, Schindler M, Specht A, Landford WN, Munch J, Kim KA,
+            Votteler J, Schubert U, Bibollet-Ruche F, Keele BF, Takehisa J,
+            Ogando Y, Ochsenbauer C, Kappes JC, Ayouba A, Peeters M, Learn GH,
+            Shaw G, Sharp PM, Bieniasz P, Hahn BH, Hatziioannou T and Kirchhoff
+            F.
+  TITLE     Tetherin-driven adaptation of Vpu and Nef function and the
+            evolution of pandemic and nonpandemic HIV-1 strains
+  JOURNAL   Cell Host Microbe 6 (5), 409-421 (2009)
+   PUBMED   19917496
+COMMENT     PROVISIONAL REFSEQ: This record has not yet been subject to final
+            NCBI review. The reference sequence was derived from HM136906.1.
+            On or before Jul 23, 2013 this sequence version replaced
+            XP_004060314.1, XP_004060315.1.
+            
+            ##Evidence-Data-START##
+            Transcript exon combination :: HM136906.1, GQ925926.1 [ECO:0000332]
+            RNAseq introns              :: mixed/partial sample support
+                                           SAMEA1696410, SAMN00632194
+                                           [ECO:0000350]
+            ##Evidence-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..185
+                     /organism="Gorilla gorilla"
+                     /db_xref="taxon:9593"
+                     /chromosome="19"
+                     /map="19"
+     Protein         1..185
+                     /product="bone marrow stromal antigen 2"
+                     /calculated_mol_wt=20195
+     Region          54..138
+                     /region_name="BST2"
+                     /note="Bone marrow stromal antigen 2; pfam16716"
+                     /db_xref="CDD:293321"
+     CDS             1..185
+                     /gene="BST2"
+                     /gene_synonym="tetherin"
+                     /coded_by="NM_001279631.1:1..558"
+                     /db_xref="GeneID:101145944"
+ORIGIN      
+        1 mastlydycr vpmdailkkd gdkrcklllg igilvlliiv ilgvpliift ikanseacrd
+       61 glravmecrn vthllqqelt eaqkgfqdve aqaatcnhtv malmasldae kaqgqkkvee
+      121 legeittlnh klqdasaeve rlrrenqvls vriadtkyyp ssqdsssaaa pqllfvllgl
+      181 salpq
+//
+
+LOCUS       NP_001177409             185 aa            linear   PRI 26-JUN-2020
+DEFINITION  bone marrow stromal antigen 2 [Pan troglodytes].
+ACCESSION   NP_001177409 XP_512491
+VERSION     NP_001177409.1
+DBSOURCE    REFSEQ: accession NM_001190480.1
+KEYWORDS    RefSeq.
+SOURCE      Pan troglodytes (chimpanzee)
+  ORGANISM  Pan troglodytes
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Mammalia; Eutheria; Euarchontoglires; Primates; Haplorrhini;
+            Catarrhini; Hominidae; Pan.
+REFERENCE   1  (residues 1 to 185)
+  AUTHORS   Yoshida T, Koyanagi Y and Strebel K.
+  TITLE     Functional antagonism of rhesus macaque and chimpanzee BST-2 by
+            HIV-1 Vpu is mediated by cytoplasmic domain interactions
+  JOURNAL   J. Virol. 87 (24), 13825-13836 (2013)
+   PUBMED   24109238
+  REMARK    GeneRIF: The cytoplasmic domain of HIV-1 Vpu contributes to the
+            physical interaction with, and functional antagonism of chimpanzee
+            BST-2.
+REFERENCE   2  (residues 1 to 185)
+  AUTHORS   Lim ES, Malik HS and Emerman M.
+  TITLE     Ancient adaptive evolution of tetherin shaped the functions of Vpu
+            and Nef in human immunodeficiency virus and primate lentiviruses
+  JOURNAL   J. Virol. 84 (14), 7124-7134 (2010)
+   PUBMED   20444900
+COMMENT     PROVISIONAL REFSEQ: This record has not yet been subject to final
+            NCBI review. The reference sequence was derived from HM136905.1.
+            On Jun 26, 2010 this sequence version replaced XP_512491.2.
+            
+            ##Evidence-Data-START##
+            Transcript exon combination :: HM136905.1 [ECO:0000332]
+            RNAseq introns              :: single sample supports all introns
+                                           SAMN03018695, SAMN03282314
+                                           [ECO:0000348]
+            ##Evidence-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..185
+                     /organism="Pan troglodytes"
+                     /db_xref="taxon:9598"
+                     /chromosome="19"
+                     /map="19"
+     Protein         1..185
+                     /product="bone marrow stromal antigen 2"
+                     /calculated_mol_wt=20415
+     Region          54..138
+                     /region_name="BST2"
+                     /note="Bone marrow stromal antigen 2; pfam16716"
+                     /db_xref="CDD:318842"
+     CDS             1..185
+                     /gene="BST2"
+                     /coded_by="NM_001190480.1:1..558"
+                     /db_xref="GeneID:455837"
+                     /db_xref="VGNC:VGNC:2093"
+ORIGIN      
+        1 mastlydycr vpmddiwkkd gdkrcklllg igilmlliiv ilgvpliift ikanseacrd
+       61 glravmecrn vthllqqelt eaqkgfqdve aqaatcnhtv malmasldae kaqgqkkvee
+      121 leeeittlnh klqdasaeve rlrrenqvls vriadkkyys ssqdsssaaa pqllivllgl
+      181 sallq
+//
+
+LOCUS       NP_001295602             185 aa            linear   PRI 30-JUN-2020
+DEFINITION  bone marrow stromal antigen 2 [Nomascus leucogenys].
+ACCESSION   NP_001295602
+VERSION     NP_001295602.1
+DBSOURCE    REFSEQ: accession NM_001308673.1
+KEYWORDS    RefSeq.
+SOURCE      Nomascus leucogenys (northern white-cheeked gibbon)
+  ORGANISM  Nomascus leucogenys
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Mammalia; Eutheria; Euarchontoglires; Primates; Haplorrhini;
+            Catarrhini; Hylobatidae; Nomascus.
+REFERENCE   1  (residues 1 to 185)
+  AUTHORS   Lim ES, Malik HS and Emerman M.
+  TITLE     Ancient adaptive evolution of tetherin shaped the functions of Vpu
+            and Nef in human immunodeficiency virus and primate lentiviruses
+  JOURNAL   J. Virol. 84 (14), 7124-7134 (2010)
+   PUBMED   20444900
+COMMENT     PROVISIONAL REFSEQ: This record has not yet been subject to final
+            NCBI review. The reference sequence was derived from HM136909.1.
+            
+            ##Evidence-Data-START##
+            Transcript exon combination :: HM136909.1 [ECO:0000332]
+            RNAseq introns              :: single sample supports all introns
+                                           SAMN07315620, SAMN07315622
+                                           [ECO:0000348]
+            ##Evidence-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..185
+                     /organism="Nomascus leucogenys"
+                     /db_xref="taxon:61853"
+                     /chromosome="10"
+                     /map="10"
+     Protein         1..185
+                     /product="bone marrow stromal antigen 2"
+                     /calculated_mol_wt=20104
+     Region          54..138
+                     /region_name="BST2"
+                     /note="Bone marrow stromal antigen 2; pfam16716"
+                     /db_xref="CDD:293321"
+     CDS             1..185
+                     /gene="BST2"
+                     /coded_by="NM_001308673.1:1..558"
+                     /db_xref="GeneID:100594534"
+ORIGIN      
+        1 maptlydycr gpmddiwkkd gdkrcklllg igilvlliiv slgvpliift ikanseacqd
+       61 glravmecrn vthllqqelt eaqkgfqdae aqaatcnqtv malmasldae kaqgqkkvee
+      121 legeittlnh klqdasaeve rlrrenqvls vriadkkysa ssqdsspaaa pqililllgl
+      181 salll
+//
+
+LOCUS       XP_030675274             185 aa            linear   PRI 17-SEP-2019
+DEFINITION  bone marrow stromal antigen 2 isoform X1 [Nomascus leucogenys].
+ACCESSION   XP_030675274
+VERSION     XP_030675274.1
+DBLINK      BioProject: PRJNA564096
+DBSOURCE    REFSEQ: accession XM_030819414.1
+KEYWORDS    RefSeq.
+SOURCE      Nomascus leucogenys (northern white-cheeked gibbon)
+  ORGANISM  Nomascus leucogenys
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Mammalia; Eutheria; Euarchontoglires; Primates; Haplorrhini;
+            Catarrhini; Hylobatidae; Nomascus.
+COMMENT     MODEL REFSEQ:  This record is predicted by automated computational
+            analysis. This record is derived from a genomic sequence
+            (NC_044390.1) annotated using gene prediction method: Gnomon,
+            supported by mRNA and EST evidence.
+            Also see:
+                Documentation of NCBI's Annotation Process
+            
+            ##Genome-Annotation-Data-START##
+            Annotation Provider         :: NCBI
+            Annotation Status           :: Full annotation
+            Annotation Name             :: Nomascus leucogenys Annotation
+                                           Release 103
+            Annotation Version          :: 103
+            Annotation Pipeline         :: NCBI eukaryotic genome annotation
+                                           pipeline
+            Annotation Software Version :: 8.2
+            Annotation Method           :: Best-placed RefSeq; Gnomon
+            Features Annotated          :: Gene; mRNA; CDS; ncRNA
+            ##Genome-Annotation-Data-END##
+            COMPLETENESS: full length.
+FEATURES             Location/Qualifiers
+     source          1..185
+                     /organism="Nomascus leucogenys"
+                     /isolate="Asia"
+                     /bio_material="CORIELL:NLL605"
+                     /db_xref="taxon:61853"
+                     /chromosome="10"
+                     /sex="female"
+                     /tissue_type="EB transformed lymphoblast cell line"
+                     /dev_stage="adult"
+     Protein         1..185
+                     /product="bone marrow stromal antigen 2 isoform X1"
+                     /calculated_mol_wt=20165
+     Region          57..141
+                     /region_name="BST2"
+                     /note="Bone marrow stromal antigen 2; pfam16716"
+                     /db_xref="CDD:374748"
+     CDS             1..185
+                     /gene="BST2"
+                     /coded_by="XM_030819414.1:83..640"
+                     /db_xref="GeneID:100594534"
+ORIGIN      
+        1 maptlydycr vpmddiwkkd gdkrcklllg igilvlliiv slgvpliift ikanseacrd
+       61 glravmecrn vthllqqelt eaqkgfqdae aqaatcnqtv malmasldae kaqgqkkvee
+      121 legeittlnh klqdasaeve rlrrenqvls vriadkkysa ssqdsssaaa pqililllgl
+      181 salll
+//
+

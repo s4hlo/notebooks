@@ -196,29 +196,76 @@ Tente encontrar as melhores combinações de hiperparâmetros para o método da 
 
 
 """
-
-# TODO HAHHAHHAAHHAHAH
-
+# %%
 from sklearn.linear_model import LogisticRegression
 
-from sklearn.model_selection import GridSearchCV
-from sklearn.linear_model import LogisticRegression
+# definindo os hiperparâmetros para regressão logística
+tuned_parameters_lr = [
+    {
+        "penalty": ['l2', 'none'],
+        "C": [0.001, 0.01, 0.1, 1, 10, 100],
+        "solver": ['lbfgs', 'newton-cg', 'newton-cholesky', 'sag'],
+        "max_iter": [100, 200, 500]
+    }
+]
 
-# Define the parameter grid for Logistic Regression
-param_grid_lr = {
-    'penalty': ['l2', 'none'],
-    'C': [0.001, 0.01, 0.1, 1, 10, 100],
-    'solver': ['lbfgs', 'newton-cg', 'newton-cholesky', 'sag'],
-    'max_iter': [100, 200, 500]
-}
+# criando o modelo de regressão logística
+model_lr = LogisticRegression()
 
-# Create a Logistic Regression model
-lr_model = LogisticRegression()
+# realizando a busca em grade
+search_lr = GridSearchCV(model_lr, tuned_parameters_lr, scoring="accuracy", cv=5, refit=True)
+result_lr = search_lr.fit(X_train, y_train)
 
-# Perform GridSearchCV
-grid_search_lr = GridSearchCV(lr_model, param_grid_lr, scoring='accuracy', cv=5)
-grid_search_lr.fit(X_train, y_train)
+# 10 melhores combinações de hiperparâmetros
+p_lr = pd.concat([pd.DataFrame(result_lr.cv_results_["params"]),
+                  pd.Series(result_lr.cv_results_["rank_test_score"], name="rank_test_score"),
+                  pd.Series(result_lr.cv_results_["mean_test_score"], name="mean_test_score")], axis=1)
+print("Top 10 combinações:")
+print(p_lr[result_lr.cv_results_["rank_test_score"] <= 10].sort_values("rank_test_score"))
 
-# Print the best parameters and best score
-print("Best parameters found: ", grid_search_lr.best_params_)
-print("Best accuracy score: ", grid_search_lr.best_score_)
+# %% 
+# melhor modelo encontrado
+best_model_lr = result_lr.best_estimator_
+print("\nMelhor modelo:")
+print(best_model_lr)
+
+# avaliar o modelo com os dados de validação
+yhat_lr = best_model_lr.predict(X_test)
+print("\nClassification Report:")
+print(classification_report(y_test, yhat_lr))
+
+# %%
+
+# usando Pipeline com StandardScaler para melhorar a convergência
+pipe_lr = Pipeline([('scaler', StandardScaler()), ('lr', LogisticRegression())])
+
+# hiperparâmetros com prefixo 'lr__' para o pipeline
+tuned_parameters_lr_pipe = [
+    {
+        "lr__penalty": ['l2', 'none'],
+        "lr__C": [0.001, 0.01, 0.1, 1, 10, 100],
+        "lr__solver": ['lbfgs', 'newton-cg', 'newton-cholesky', 'sag'],
+        "lr__max_iter": [100, 200, 500]
+    }
+]
+
+search_lr_pipe = GridSearchCV(pipe_lr, tuned_parameters_lr_pipe, scoring="accuracy", cv=5, refit=True)
+result_lr_pipe = search_lr_pipe.fit(X_train, y_train)
+
+# 10 melhores combinações
+p_lr_pipe = pd.concat([pd.DataFrame(result_lr_pipe.cv_results_["params"]),
+                       pd.Series(result_lr_pipe.cv_results_["rank_test_score"], name="rank_test_score"),
+                       pd.Series(result_lr_pipe.cv_results_["mean_test_score"], name="mean_test_score")], axis=1)
+print("Top 10 combinações com scaling:")
+print(p_lr_pipe[result_lr_pipe.cv_results_["rank_test_score"] <= 10].sort_values("rank_test_score"))
+
+best_model_lr_pipe = result_lr_pipe.best_estimator_
+print("\nMelhor modelo com scaling:")
+print(best_model_lr_pipe)
+
+# avaliar o modelo
+yhat_lr_pipe = best_model_lr_pipe.predict(X_test)
+print("\nClassification Report com scaling:")
+print(classification_report(y_test, yhat_lr_pipe))
+
+# %%
