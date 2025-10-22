@@ -202,6 +202,8 @@ plt.title('Matriz de Correlação entre Variáveis')
 plt.tight_layout()
 plt.show()
 
+# %%
+
 # Mostrar correlações com Exam_Score
 print("\nCorrelações com Exam_Score (ordenadas por valor absoluto):")
 exam_correlations = df_numeric.corr(numeric_only=True)['Exam_Score'].abs().sort_values(ascending=False)
@@ -259,5 +261,132 @@ plt.show()
 
 # %% [markdown]
 # << SUA RESPOSTA EM FORMATO MARKDOWN >>
+# %%
 
+print("=== ANÁLISE PARA RESPONDER AS PERGUNTAS ===\n")
 
+# Pergunta 1: Fatores com maior correlação positiva com Exam_Score
+print("1. FATORES COM MAIOR CORRELAÇÃO POSITIVA COM EXAM_SCORE:")
+print("=" * 60)
+correlations = df_numeric.corr(numeric_only=True)['Exam_Score'].sort_values(ascending=False)
+print("Correlações com Exam_Score (ordenadas):")
+for var, corr in correlations.items():
+    if var != 'Exam_Score':
+        print(f"{var}: {corr:.3f}")
+
+print(f"\nTop 3 fatores com maior correlação positiva:")
+top_3 = correlations.drop('Exam_Score').head(3)
+for i, (var, corr) in enumerate(top_3.items(), 1):
+    print(f"{i}. {var}: {corr:.3f}")
+
+# %%
+# Pergunta 2: Diferença de desempenho por atividades extracurriculares e envolvimento dos pais
+print("\n2. DIFERENÇA DE DESEMPENHO POR ATIVIDADES EXTRACURRICULARES E ENVOLVIMENTO DOS PAIS:")
+print("=" * 80)
+
+# Análise por atividades extracurriculares
+print("Desempenho por Atividades Extracurriculares:")
+extracurricular_stats = df.groupby('Extracurricular_Activities')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
+print(extracurricular_stats)
+
+print("\nDesempenho por Envolvimento dos Pais:")
+parental_stats = df.groupby('Parental_Involvement')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
+print(parental_stats)
+
+# %%
+# Pergunta 3: Distribuição das pontuações
+print("\n3. DISTRIBUIÇÃO DAS PONTUAÇÕES:")
+print("=" * 40)
+print(f"Média: {df['Exam_Score'].mean():.2f}")
+print(f"Mediana: {df['Exam_Score'].median():.2f}")
+print(f"Desvio padrão: {df['Exam_Score'].std():.2f}")
+print(f"Min: {df['Exam_Score'].min():.2f}")
+print(f"Max: {df['Exam_Score'].max():.2f}")
+
+# Classificação das notas
+print(f"\nClassificação das notas:")
+print(f"Notas baixas (< 60): {len(df[df['Exam_Score'] < 60])} alunos ({len(df[df['Exam_Score'] < 60])/len(df)*100:.1f}%)")
+print(f"Notas médias (60-80): {len(df[(df['Exam_Score'] >= 60) & (df['Exam_Score'] <= 80)])} alunos ({len(df[(df['Exam_Score'] >= 60) & (df['Exam_Score'] <= 80)])/len(df)*100:.1f}%)")
+print(f"Notas altas (> 80): {len(df[df['Exam_Score'] > 80])} alunos ({len(df[df['Exam_Score'] > 80])/len(df)*100:.1f}%)")
+
+# %%
+# Pergunta 4: Relação entre horas de estudo e pontuação
+print("\n4. RELAÇÃO ENTRE HORAS DE ESTUDO E PONTUAÇÃO:")
+print("=" * 50)
+
+# Correlação entre Hours_Studied e Exam_Score
+correlation_hours = df['Hours_Studied'].corr(df['Exam_Score'])
+print(f"Correlação entre Hours_Studied e Exam_Score: {correlation_hours:.3f}")
+
+# Análise por faixas de horas de estudo
+print(f"\nDesempenho por faixas de horas de estudo:")
+df['Hours_Category'] = pd.cut(df['Hours_Studied'], bins=[0, 2, 4, 6, 8, 10], labels=['0-2h', '2-4h', '4-6h', '6-8h', '8-10h'])
+hours_analysis = df.groupby('Hours_Category')['Exam_Score'].agg(['mean', 'count'])
+print(hours_analysis)
+
+# %%
+# Pergunta 5: Outras variáveis de interesse
+print("\n5. OUTRAS VARIÁVEIS DE INTERESSE:")
+print("=" * 40)
+
+# Análise por tipo de escola
+print("Desempenho por Tipo de Escola:")
+school_analysis = df.groupby('School_Type')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
+print(school_analysis)
+
+print(f"\nDesempenho por Gênero:")
+gender_analysis = df.groupby('Gender')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
+print(gender_analysis)
+
+# Verificar colunas disponíveis
+print(f"\nColunas disponíveis no dataset:")
+print(df.columns.tolist())
+
+# Análise de outras variáveis disponíveis
+print(f"\nDesempenho por Peer_Influence:")
+peer_analysis = df.groupby('Peer_Influence')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
+print(peer_analysis)
+
+# %%
+# Resumo das principais descobertas
+print("\n" + "="*60)
+print("RESUMO DAS PRINCIPAIS DESCOBERTAS:")
+print("="*60)
+
+print(f"1. Fator com maior correlação: {top_3.index[0]} ({top_3.iloc[0]:.3f})")
+print(f"2. Diferença entre atividades extracurriculares: {extracurricular_stats.loc['Yes', 'mean'] - extracurricular_stats.loc['No', 'mean']:.2f} pontos")
+print(f"3. Distribuição das notas: {len(df[df['Exam_Score'] > 80])/len(df)*100:.1f}% com notas altas")
+print(f"4. Correlação horas-estudo: {correlation_hours:.3f}")
+print(f"5. Melhor tipo de escola: {school_analysis['mean'].idxmax()} ({school_analysis['mean'].max():.2f} pontos)")
+print(f"6. Melhor influência dos pares: {peer_analysis['mean'].idxmax()} ({peer_analysis['mean'].max():.2f} pontos)")
+
+# %%
+# Gráficos adicionais para suportar as respostas
+print("\nGerando gráficos adicionais para suportar as respostas...")
+
+# Gráfico 1: Top correlações
+plt.figure(figsize=(10, 6))
+top_correlations = correlations.drop('Exam_Score').head(5)
+plt.barh(range(len(top_correlations)), top_correlations.values)
+plt.yticks(range(len(top_correlations)), top_correlations.index)
+plt.xlabel('Correlação com Exam_Score')
+plt.title('Top 5 Correlações com Exam_Score')
+plt.grid(axis='x', alpha=0.3)
+plt.show()
+
+# Gráfico 2: Comparação de desempenho
+fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+
+# Atividades extracurriculares
+sns.boxplot(data=df, x='Extracurricular_Activities', y='Exam_Score', ax=axes[0])
+axes[0].set_title('Desempenho por Atividades Extracurriculares')
+
+# Envolvimento dos pais
+sns.boxplot(data=df, x='Parental_Involvement', y='Exam_Score', ax=axes[1])
+axes[1].set_title('Desempenho por Envolvimento dos Pais')
+axes[1].tick_params(axis='x', rotation=45)
+
+plt.tight_layout()
+plt.show()
+
+# %%
