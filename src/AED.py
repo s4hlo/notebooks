@@ -1,12 +1,24 @@
+# ---
+# jupyter:
+#   jupytext:
+#     cell_metadata_filter: -all
+#     custom_cell_magics: kql
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.17.3
+# ---
+
 # %% [markdown]
 # ### Instruções Gerais
-# 
+#
 # Siga os passos abaixo como um guia para estruturar sua análise. O objetivo não é apenas gerar gráficos, mas também interpretá-los para entender a história que os dados contam.
-# 
+#
 # #### Passo 1: Preparação do Ambiente e Carregamento dos Dados
-# 
+#
 # Comece criando seu notebook e preparando o ambiente para a análise.
-# 
+#
 # 1.  Crie um novo notebook no Google Colab ou em seu ambiente Jupyter local.
 # 2.  Importe as bibliotecas essenciais para a análise. No início do seu código, inclua:
 #     ```python
@@ -20,38 +32,38 @@
 #     df = pd.read_csv('caminho/para/seu/arquivo.csv')
 #     ```
 # 4.  Inspecione o início do seu DataFrame para garantir que os dados foram carregados corretamente, utilizando o comando `df.head()`.
-# 
+#
 # #### Passo 2: Exploração Inicial e Limpeza
-# 
+#
 # Antes de criar visualizações, é fundamental entender a estrutura e a qualidade dos seus dados.
-# 
+#
 # 1.  Verifique as informações gerais do DataFrame usando `df.info()`. Observe os tipos de dados de cada coluna (são numéricos? categóricos?) e se há valores nulos.
 # 2.  Conte os dados faltantes (nulos) em cada coluna com o comando `df.isnull().sum()`. Se houver dados faltantes, será necessário um tratamento (descartar, substituir pela média?).
 # 3.  Gere estatísticas descritivas para as colunas numéricas usando `df.describe()`. Isso te dará uma ideia da média, desvio padrão, valores mínimos e máximos de variáveis como `Exam_Score` e `Hours_Studied`.
-# 
+#
 # #### Passo 3: Análise e Visualização dos Dados
-# 
+#
 # Agora é a hora de criar gráficos para responder perguntas e encontrar padrões. Explore os dados com os seguintes tipos de análise:
-# 
+#
 # 1.  Analise a distribuição da variável mais importante, `Exam_Score`.
 #     * Crie um histograma com `seaborn.histplot()` para ver como as notas dos alunos estão distribuídas. Elas se concentram em alguma faixa específica?
-# 
+#
 # 2.  Investigue as variáveis categóricas
 #     * Conte a quantidade de alunos por categoria em colunas como `School_Type`, `Parental_Involvement` e `Gender` usando `df['nome_da_coluna'].value_counts()`.
 #     * Crie um gráfico de barras (`seaborn.countplot()`) para visualizar essas contagens para pelo menos duas variáveis categóricas de sua escolha.
-# 
+#
 # 3.  Explore a relação entre duas variáveis
 #     * Compare a distribuição de `Exam_Score` para diferentes categorias. Use um boxplot (`seaborn.boxplot()`) para comparar as notas entre `Gender` (gênero) ou entre `School_Type` (tipo de escola).
 #     * Investigue a relação entre `Hours_Studied` e `Exam_Score`. Crie um gráfico de dispersão (`seaborn.scatterplot()`) para ver se há uma tendência visível.
-# 
+#
 # 4.  Analise a correlação entre todas as variáveis numéricas.
 #     * Calcule a matriz de correlação. Dica: selecione apenas as colunas numéricas antes de usar o método `.corr()`.
 #     * Crie um mapa de calor (heatmap) com `seaborn.heatmap()` para visualizar a matriz de correlação. Isso facilita a identificação das relações mais fortes (positivas ou negativas) entre as variáveis.
 
 # %% [markdown]
 # # ANÁLISE EXPLORATÓRIA DE DADOS
-# 
-# Seu nome.
+#
+# Rafael Magno Freitas Nunes.
 
 # %%
 # Inicie seu código aqui...
@@ -168,9 +180,9 @@ plt.show()
 # Convertendo variáveis categóricas para numéricas
 df_numeric = df.copy()
 df_numeric = df_numeric.replace({"Low":0, "Medium": 1, "High": 2,
-                                 "No": -1, "Yes":1,
-                                 "Near":0, "Moderate": 1, 'Far': 2,
-                                 "High School": 0, "College": 1, "Postgraduate": 2,
+                 "No": -1, "Yes":1,
+                 "Near":0, "Moderate": 1, 'Far': 2,
+                 "High School": 0, "College": 1, "Postgraduate": 2,
                                  'Positive': 1, 'Neutral': 0, 'Negative':-1})
 
 print("Dados convertidos para análise numérica:")
@@ -246,147 +258,76 @@ plt.show()
 
 # %% [markdown]
 # # PERGUNTAS
-# 
+#
 # Após realizar as análises e gerar os gráficos, utilize células de texto (Markdown) no seu notebook para responder às seguintes perguntas. Justifique cada resposta com base nos gráficos e dados que você analisou.
-# 
+#
 # 1. Com base no mapa de calor (heatmap) de correlação e em outros gráficos que você gerou, quais são os 2 ou 3 fatores que parecem ter a correlação mais forte e positiva com a pontuação final no exame (Exam_Score)? Justifique sua resposta mencionando os gráficos que te levaram a essa conclusão.
-# 
+#
 # 2. Existe uma diferença clara no desempenho (Exam_Score) entre alunos que participam de atividades extracurriculares (Extracurricular_Activities) e os que não participam? E entre os diferentes níveis de envolvimento dos pais (Parental_Involvement)? Use os boxplots ou outros gráficos para explicar sua conclusão.
-# 
+#
 # 3. Como as pontuações dos exames (Exam_Score) estão distribuídas? Elas se concentram em uma faixa específica (por exemplo, notas altas, médias ou baixas)? O que o histograma que você criou revela sobre o desempenho geral dos alunos neste dataset?
-# 
+#
 # 4. Analisando o gráfico de dispersão, qual é a relação entre as Hours_Studied (Horas de Estudo) e a Exam_Score (Pontuação no Exame)? Um aumento nas horas de estudo parece garantir uma nota maior? Explique o que o padrão dos pontos no gráfico sugere.
-# 
+#
 # 5. Além das correlações mais óbvias, qual outra variável lhe chamou a atenção pela sua aparente influência no desempenho dos alunos? Apresente um gráfico que suporte sua observação e descreva o insight que você obteve ao analisar essa relação.
 
 # %% [markdown]
-# << SUA RESPOSTA EM FORMATO MARKDOWN >>
-# %%
-
-print("=== ANÁLISE PARA RESPONDER AS PERGUNTAS ===\n")
-
-# Pergunta 1: Fatores com maior correlação positiva com Exam_Score
-print("1. FATORES COM MAIOR CORRELAÇÃO POSITIVA COM EXAM_SCORE:")
-print("=" * 60)
-correlations = df_numeric.corr(numeric_only=True)['Exam_Score'].sort_values(ascending=False)
-print("Correlações com Exam_Score (ordenadas):")
-for var, corr in correlations.items():
-    if var != 'Exam_Score':
-        print(f"{var}: {corr:.3f}")
-
-print(f"\nTop 3 fatores com maior correlação positiva:")
-top_3 = correlations.drop('Exam_Score').head(3)
-for i, (var, corr) in enumerate(top_3.items(), 1):
-    print(f"{i}. {var}: {corr:.3f}")
-
-# %%
-# Pergunta 2: Diferença de desempenho por atividades extracurriculares e envolvimento dos pais
-print("\n2. DIFERENÇA DE DESEMPENHO POR ATIVIDADES EXTRACURRICULARES E ENVOLVIMENTO DOS PAIS:")
-print("=" * 80)
-
-# Análise por atividades extracurriculares
-print("Desempenho por Atividades Extracurriculares:")
-extracurricular_stats = df.groupby('Extracurricular_Activities')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
-print(extracurricular_stats)
-
-print("\nDesempenho por Envolvimento dos Pais:")
-parental_stats = df.groupby('Parental_Involvement')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
-print(parental_stats)
-
-# %%
-# Pergunta 3: Distribuição das pontuações
-print("\n3. DISTRIBUIÇÃO DAS PONTUAÇÕES:")
-print("=" * 40)
-print(f"Média: {df['Exam_Score'].mean():.2f}")
-print(f"Mediana: {df['Exam_Score'].median():.2f}")
-print(f"Desvio padrão: {df['Exam_Score'].std():.2f}")
-print(f"Min: {df['Exam_Score'].min():.2f}")
-print(f"Max: {df['Exam_Score'].max():.2f}")
-
-# Classificação das notas
-print(f"\nClassificação das notas:")
-print(f"Notas baixas (< 60): {len(df[df['Exam_Score'] < 60])} alunos ({len(df[df['Exam_Score'] < 60])/len(df)*100:.1f}%)")
-print(f"Notas médias (60-80): {len(df[(df['Exam_Score'] >= 60) & (df['Exam_Score'] <= 80)])} alunos ({len(df[(df['Exam_Score'] >= 60) & (df['Exam_Score'] <= 80)])/len(df)*100:.1f}%)")
-print(f"Notas altas (> 80): {len(df[df['Exam_Score'] > 80])} alunos ({len(df[df['Exam_Score'] > 80])/len(df)*100:.1f}%)")
-
-# %%
-# Pergunta 4: Relação entre horas de estudo e pontuação
-print("\n4. RELAÇÃO ENTRE HORAS DE ESTUDO E PONTUAÇÃO:")
-print("=" * 50)
-
-# Correlação entre Hours_Studied e Exam_Score
-correlation_hours = df['Hours_Studied'].corr(df['Exam_Score'])
-print(f"Correlação entre Hours_Studied e Exam_Score: {correlation_hours:.3f}")
-
-# Análise por faixas de horas de estudo
-print(f"\nDesempenho por faixas de horas de estudo:")
-df['Hours_Category'] = pd.cut(df['Hours_Studied'], bins=[0, 2, 4, 6, 8, 10], labels=['0-2h', '2-4h', '4-6h', '6-8h', '8-10h'])
-hours_analysis = df.groupby('Hours_Category')['Exam_Score'].agg(['mean', 'count'])
-print(hours_analysis)
-
-# %%
-# Pergunta 5: Outras variáveis de interesse
-print("\n5. OUTRAS VARIÁVEIS DE INTERESSE:")
-print("=" * 40)
-
-# Análise por tipo de escola
-print("Desempenho por Tipo de Escola:")
-school_analysis = df.groupby('School_Type')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
-print(school_analysis)
-
-print(f"\nDesempenho por Gênero:")
-gender_analysis = df.groupby('Gender')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
-print(gender_analysis)
-
-# Verificar colunas disponíveis
-print(f"\nColunas disponíveis no dataset:")
-print(df.columns.tolist())
-
-# Análise de outras variáveis disponíveis
-print(f"\nDesempenho por Peer_Influence:")
-peer_analysis = df.groupby('Peer_Influence')['Exam_Score'].agg(['mean', 'median', 'std', 'count'])
-print(peer_analysis)
-
-# %%
-# Resumo das principais descobertas
-print("\n" + "="*60)
-print("RESUMO DAS PRINCIPAIS DESCOBERTAS:")
-print("="*60)
-
-print(f"1. Fator com maior correlação: {top_3.index[0]} ({top_3.iloc[0]:.3f})")
-print(f"2. Diferença entre atividades extracurriculares: {extracurricular_stats.loc['Yes', 'mean'] - extracurricular_stats.loc['No', 'mean']:.2f} pontos")
-print(f"3. Distribuição das notas: {len(df[df['Exam_Score'] > 80])/len(df)*100:.1f}% com notas altas")
-print(f"4. Correlação horas-estudo: {correlation_hours:.3f}")
-print(f"5. Melhor tipo de escola: {school_analysis['mean'].idxmax()} ({school_analysis['mean'].max():.2f} pontos)")
-print(f"6. Melhor influência dos pares: {peer_analysis['mean'].idxmax()} ({peer_analysis['mean'].max():.2f} pontos)")
-
-# %%
-# Gráficos adicionais para suportar as respostas
-print("\nGerando gráficos adicionais para suportar as respostas...")
-
-# Gráfico 1: Top correlações
-plt.figure(figsize=(10, 6))
-top_correlations = correlations.drop('Exam_Score').head(5)
-plt.barh(range(len(top_correlations)), top_correlations.values)
-plt.yticks(range(len(top_correlations)), top_correlations.index)
-plt.xlabel('Correlação com Exam_Score')
-plt.title('Top 5 Correlações com Exam_Score')
-plt.grid(axis='x', alpha=0.3)
-plt.show()
-
-# Gráfico 2: Comparação de desempenho
-fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-
-# Atividades extracurriculares
-sns.boxplot(data=df, x='Extracurricular_Activities', y='Exam_Score', ax=axes[0])
-axes[0].set_title('Desempenho por Atividades Extracurriculares')
-
-# Envolvimento dos pais
-sns.boxplot(data=df, x='Parental_Involvement', y='Exam_Score', ax=axes[1])
-axes[1].set_title('Desempenho por Envolvimento dos Pais')
-axes[1].tick_params(axis='x', rotation=45)
-
-plt.tight_layout()
-plt.show()
-
+# ## RESPOSTAS ÀS PERGUNTAS
+#
+# ### 1. Fatores com maior correlação positiva com Exam_Score
+#
+# Com base no mapa de calor de correlação e nas análises realizadas, os **3 fatores com maior correlação positiva** com a pontuação final no exame são:
+#
+# 1. **Attendance (Frequência às aulas): 0.581** - A frequência às aulas é o fator mais fortemente correlacionado com o desempenho
+# 2. **Hours_Studied (Horas de estudo): 0.445** - O tempo dedicado aos estudos mostra forte correlação positiva
+# 3. **Previous_Scores (Notas anteriores): 0.175** - As notas anteriores também influenciam o desempenho atual
+#
+# O gráfico de correlação e o heatmap confirmam que a frequência às aulas é o preditor mais forte do sucesso acadêmico.
+#
+# ### 2. Diferença de desempenho por atividades extracurriculares e envolvimento dos pais
+#
+# **Atividades Extracurriculares:**
+# - Alunos que participam: 67.44 pontos (média)
+# - Alunos que não participam: 66.93 pontos (média)
+# - **Diferença: 0.51 pontos** - Diferença pequena mas positiva
+#
+# **Envolvimento dos Pais:**
+# - Alto envolvimento: 68.09 pontos
+# - Médio envolvimento: 67.10 pontos  
+# - Baixo envolvimento: 66.36 pontos
+# - **Diferença entre alto e baixo: 1.73 pontos** - Diferença mais significativa
+#
+# O envolvimento dos pais tem impacto maior que as atividades extracurriculares no desempenho.
+#
+# ### 3. Distribuição das pontuações
+#
+# As pontuações dos exames estão **concentradas na faixa média**:
+# - **98.3% dos alunos** têm notas entre 60-80 (faixa média)
+# - Apenas **0.7%** têm notas altas (>80)
+# - Apenas **1.0%** têm notas baixas (<60)
+#
+# O histograma revela uma distribuição normal com média de 67.24 pontos, indicando que a maioria dos alunos tem desempenho mediano, com poucos casos extremos.
+#
+# ### 4. Relação entre horas de estudo e pontuação
+#
+# A correlação entre Hours_Studied e Exam_Score é **0.445**, indicando uma **relação moderada positiva**.
+#
+# **Análise por faixas de estudo:**
+# - 0-2h: 65.67 pontos
+# - 2-4h: 61.52 pontos  
+# - 4-6h: 63.13 pontos
+# - 6-8h: 64.25 pontos
+# - 8-10h: 64.28 pontos
+#
+# **Conclusão:** Mais horas de estudo não garantem necessariamente notas maiores. Há um ponto de saturação onde o tempo adicional não se traduz em melhor desempenho.
+#
+# ### 5. Outras variáveis de interesse
+#
+# **Influência dos Pares (Peer_Influence)** chamou atenção:
+# - Influência positiva: 67.62 pontos
+# - Influência neutra: 67.20 pontos
+# - Influência negativa: 66.56 pontos
+# - **Diferença: 1.06 pontos** entre influência positiva e negativa
+#
+# O gráfico de boxplot mostra que alunos com influência positiva dos pares têm distribuição de notas ligeiramente superior, sugerindo que o ambiente social influencia o desempenho acadêmico.
 # %%
