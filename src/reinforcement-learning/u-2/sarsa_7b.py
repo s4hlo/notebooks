@@ -802,7 +802,7 @@ _ = plot_tabular(V, kind="V", env_name=ambiente, center_zero=False)
 # 
 # **Entregáveis:**
 # 
-# 2. **Código** (notebook `*.ipynb`)
+# 2. **Código**
 # 1. **Relatório** (`*.pdf`).
 # - O PDF deve conter:
 #   - **Setup** (hiperparâmetros usados).

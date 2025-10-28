@@ -1,5 +1,4 @@
 # %% [markdown]
-# <a href="https://colab.research.google.com/github/s4hlo/notebooks/blob/main/subtitles_delayer.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 # %%
 import datetime

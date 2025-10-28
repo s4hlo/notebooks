@@ -558,7 +558,7 @@ Image(filename=gif_path)
 # 
 # **Entregáveis:**
 # 
-# 2. **Código** (notebook `.ipynb`)
+# 2. **Código**
 # 1. **Relatório** (`.pdf`).
 # - O PDF deve conter:
 #   - **Setup** (parâmetros usados).
