@@ -23,13 +23,13 @@ def convert_to_html(ipynb_file):
     subprocess.run(cmd, shell=True, check=True)
     print("✅ OK")
 
-file_paths = [
-    "src/value_iteration.py",
-    "src/policy_iteration.py",
-]
-
 if __name__ == "__main__":
-    for py_file in file_paths:
-        print(f"\n📁 {py_file}")
-        ipynb_file = convert_py_to_ipynb(py_file)
-        convert_to_html(ipynb_file)
+    if len(sys.argv) != 2:
+        print("Usage: python convert_to_notebook.py <file_path>")
+        print("Example: python convert_to_notebook.py src/my_script.py")
+        sys.exit(1)
+    
+    py_file = sys.argv[1]
+    print(f"\n📁 {py_file}")
+    ipynb_file = convert_py_to_ipynb(py_file)
+    convert_to_html(ipynb_file)

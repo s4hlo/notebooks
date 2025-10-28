@@ -1,0 +1,24 @@
+---
+alwaysApply: true
+---
+
+# Poetry Setup Rules
+
+## Dependency Management
+
+This repository uses **Poetry** for Python dependency management.
+
+### Commands to Use
+
+- `poetry install` - Install dependencies
+- `poetry add <package>` - Add new dependency
+- `poetry run python <script>` - Run Python scripts
+- `poetry shell` - Activate virtual environment
+
+### Do NOT Use
+
+- `python` or `python3` directly
+- `pip install`
+- `pip3 install`
+
+Always use Poetry commands to maintain proper dependency isolation and version management.

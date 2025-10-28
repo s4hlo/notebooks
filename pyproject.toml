@@ -25,6 +25,7 @@ tensorflow = "^2.20.0"
 tensorflow-hub = "^0.16.1"
 biopython = "^1.85"
 gym = "^0.26.2"
+yfinance = "^0.2.66"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
