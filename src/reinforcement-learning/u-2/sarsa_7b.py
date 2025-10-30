@@ -15,6 +15,7 @@ import gymnasium as gym
 import numpy as np
 from typing import Dict, Tuple, List, Union, Optional, Set
 from tqdm.auto import tqdm
+from IPython.display import Image
 
 # Importa funções utilitárias comuns
 from utils_rl import (
@@ -29,7 +30,6 @@ from utils_rl import (
 
 # %% [markdown]
 # ## Ambiente: nova instância
-fadsfdsafasdfda
 # %%
 # Configura o ambiente
 ambiente = 'CliffWalking-v1'

@@ -15,6 +15,7 @@ import gymnasium as gym
 import numpy as np
 from typing import Dict, Tuple, List, Union, Optional, Set
 from tqdm.auto import tqdm
+from IPython.display import Image
 
 # Importa funções utilitárias comuns
 from utils_rl import (
@@ -146,7 +147,7 @@ def q_learning(
         # Dica:
         # usar
         # próximo estado, recompensa, terminated (flag), truncated (flag), _ = env.step(ação)
-        # para fazer a trasição de um estado para o outro dada uma ação do agente
+        # para fazer a transição de um estado para o outro dada uma ação do agente
 
 
 
