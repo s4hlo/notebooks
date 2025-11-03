@@ -100,17 +100,63 @@ def sarsa(
         # Reset para o estado inicial (s0)
         s, _ = env.reset()
 
+        # Escolhe ação inicial usando política ε-gulosa (amostra de Pi[s])
+        probs = Pi[s]
+        if probs.sum() > 0:
+            probs = probs / probs.sum()
+        else:
+            probs = np.full(n_actions, 1.0 / n_actions)
+        a = int(rng.choice(n_actions, p=probs))
+
+        # Inicializa métricas do episódio
+        G = 0.0  # retorno (soma de recompensas não-descontadas)
+        t = 0    # contador de passos
 
         ############################################################################
-        # Implementação aqui
-        # Dica:
-        # usar
-        # próximo estado, recompensa, terminated (flag), truncated (flag), _ = env.step(ação)
-        # para fazer a trasição de um estado para o outro dada uma ação do agente
-
-
-
-
+        # Implementação SARSA(0)
+        while True:
+            # Executa ação e observa transição
+            s_next, r, terminated, truncated, _ = env.step(a)
+            
+            # Acumula recompensa e incrementa contador
+            G += r
+            t += 1
+            
+            # Incrementa contagem de visitas
+            numero_de_visitas[s, a] += 1
+            
+            # Atualiza Q(s,a) usando SARSA
+            if terminated or truncated:
+                # Episódio terminou: Q(s',a') = 0
+                Q[s, a] += alpha * (r - Q[s, a])
+            else:
+                # Escolhe próxima ação a' usando política ε-gulosa
+                probs_next = Pi[s_next]
+                if probs_next.sum() > 0:
+                    probs_next = probs_next / probs_next.sum()
+                else:
+                    probs_next = np.full(n_actions, 1.0 / n_actions)
+                a_next = int(rng.choice(n_actions, p=probs_next))
+                
+                # Atualização SARSA: Q(s,a) ← Q(s,a) + α[r + γQ(s',a') - Q(s,a)]
+                Q[s, a] += alpha * (r + gamma * Q[s_next, a_next] - Q[s, a])
+                
+                # Avança para próximo estado e ação
+                s = s_next
+                a = a_next
+            
+            # Atualiza política ε-suave para o estado s baseada em Q (sempre após atualizar Q)
+            a_star = int(np.argmax(Q[s]))
+            Pi[s, :] = epsilon / n_actions
+            Pi[s, a_star] += 1.0 - epsilon
+            
+            # Verifica se episódio terminou
+            if terminated or truncated:
+                break
+        
+        # Registra métricas do episódio
+        episodio_T.append(t)
+        episodio_G.append(G)
         ############################################################################
 
     return Q, Pi, numero_de_visitas, N, episodio_T, episodio_G
