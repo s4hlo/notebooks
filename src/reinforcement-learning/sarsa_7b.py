@@ -1,14 +1,3 @@
-# %% [markdown]
-# # Laboratório 7B: Sarsa (CliffWalking)
-
-# %% [markdown]
-# ## Importações
-
-# %%
-# Instala os pacotes necessários:
-# - gymnasium[toy-text]: inclui ambientes simples como FrozenLake, Taxi, etc.
-# - imageio[ffmpeg]: permite salvar vídeos e GIFs (formato .mp4 ou .gif)
-!pip install gymnasium[toy-text] imageio[ffmpeg]
 
 # %%
 import gymnasium as gym
@@ -28,10 +17,7 @@ from utils_rl import (
     gerar_gif_simulacao
 )
 
-# %% [markdown]
-# ## Ambiente: nova instância
 # %%
-# Configura o ambiente
 ambiente = 'CliffWalking-v1'
 render_mode = 'rgb_array'  # retorna imagens do ambiente como arrays de pixels
 env = gym.make(ambiente, render_mode=render_mode)
