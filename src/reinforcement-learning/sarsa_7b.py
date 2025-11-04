@@ -109,13 +109,10 @@ Q, Pi, numero_de_visitas, k, T, G = sarsa(
 )
 
 V = np.sum(Pi * Q, axis=1)
+
 # %%
 plotar_metricas(T, G)
-
-# %%
 visualizar_politica(Pi, ambiente)
-
-# %%
 estados, acoes, recompensas = simular_trajetoria_gym(Pi, "CliffWalking-v1", max_steps=200)
 plot_trajetoria_gym("CliffWalking-v1", estados, titulo="Trajetória (gulosa)")
 
@@ -136,5 +133,21 @@ plot_tabular(Pi, kind="Pi")
 # %%
 print(ambiente)
 _ = plot_tabular(V, kind="V", env_name=ambiente, center_zero=False)
+
+# %%
+visualizar_politica(Pi, ambiente)
+visualizar_politica(Pi, ambiente)
+
+Pi
+
+# %%
+estados, acoes, recompensas = simular_trajetoria_gym(Pi_greedy, "CliffWalking-v1", max_steps=200)
+plot_trajetoria_gym("CliffWalking-v1", estados, titulo="Trajetória (política ótima)")
+
+# %%
+gif = gerar_gif_simulacao(Pi_greedy, env, path_gif=path_gif, n_episodios=10, greedy=True)
+
+# %%
+plot_tabular(Pi_greedy, kind="Pi")
 
 # %%

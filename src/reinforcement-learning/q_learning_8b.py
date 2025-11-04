@@ -1,15 +1,3 @@
-# %% [markdown]
-# # Laboratório 8B: Q-learning (CliffWalking)
-
-# %% [markdown]
-# ## Importações
-
-# %%
-# # Instala os pacotes necessários:
-# # - gymnasium[toy-text]: inclui ambientes simples como FrozenLake, Taxi, etc.
-# # - imageio[ffmpeg]: permite salvar vídeos e GIFs (formato .mp4 ou .gif)
-# !pip install gymnasium[toy-text] imageio[ffmpeg]
-
 # %%
 import gymnasium as gym
 import numpy as np
@@ -17,7 +5,6 @@ from typing import Dict, Tuple, List, Union, Optional, Set
 from tqdm.auto import tqdm
 from IPython.display import Image
 
-# Importa funções utilitárias comuns
 from utils_rl import (
     plotar_metricas,
     visualizar_politica,
@@ -28,17 +15,11 @@ from utils_rl import (
     gerar_gif_simulacao
 )
 
-# %% [markdown]
-# ## Ambiente: nova instância
-
 # %%
 # Configura o ambiente
 ambiente = 'CliffWalking-v1'
-render_mode = 'rgb_array'  # retorna imagens do ambiente como arrays de pixels
+render_mode = 'rgb_array'
 env = gym.make(ambiente, render_mode=render_mode)
-
-# %% [markdown]
-# ## Algoritmo: Q-learning
 
 # %%
 # Desempenho da POLÍTICA ALVO (gulosa, determinística)
@@ -156,19 +137,13 @@ def q_learning(
 
     return Q, Pi_target, numero_de_visitas, N, episodio_T, episodio_G
 
-# %% [markdown]
-# ## Experimento
-
-# %% [markdown]
-# ### Simulação
-
 # %%
 # Hiper-parâmetros principais
-EPISODIOS = 5000  # @param {type:"integer"}  # número de episódios
-ALPHA     = 0.01  # @param {type:"number"}
-GAMMA     = 0.9   # @param {type:"number"}
-EPSILON   = 0.1   # @param {type:"number"}
-SEED      = 42    # @param {type:"integer"}
+EPISODIOS = 5000
+ALPHA     = 0.01
+GAMMA     = 0.9
+EPSILON   = 0.1
+SEED      = 42
 
 # %%
 # Q-learning
