@@ -1,11 +1,4 @@
-
 # %%
-import gymnasium as gym
-import numpy as np
-from typing import Dict, Tuple, List, Union, Optional, Set
-from tqdm.auto import tqdm
-from IPython.display import Image
-
 from utils_rl import (
     plotar_metricas,
     visualizar_politica,
@@ -17,12 +10,16 @@ from utils_rl import (
 )
 
 # %%
+import gymnasium as gym
+import numpy as np
+from typing import Tuple, List, Optional
+from tqdm.auto import tqdm
+from IPython.display import Image
+
+# %%
 ambiente = 'CliffWalking-v1'
 render_mode = 'rgb_array'
 env = gym.make(ambiente, render_mode=render_mode)
-
-# %% [markdown]
-# ## Algoritmo: Sarsa
 
 # %%
 def sarsa(
@@ -94,12 +91,6 @@ def sarsa(
 
     return Q, Pi, numero_de_visitas, N, episodio_T, episodio_G
 
-# %% [markdown]
-# ## Experimento
-
-# %% [markdown]
-# ### Simulação
-
 # %%
 EPISODIOS = 5000
 ALPHA     = 0.01
@@ -118,10 +109,6 @@ Q, Pi, numero_de_visitas, k, T, G = sarsa(
 )
 
 V = np.sum(Pi * Q, axis=1)
-
-# %% [markdown]
-# ### Visualização
-
 # %%
 plotar_metricas(T, G)
 
@@ -149,3 +136,5 @@ plot_tabular(Pi, kind="Pi")
 # %%
 print(ambiente)
 _ = plot_tabular(V, kind="V", env_name=ambiente, center_zero=False)
+
+# %%

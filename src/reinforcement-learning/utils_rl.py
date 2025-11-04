@@ -1,9 +1,3 @@
-# %% [markdown]
-# # Utilitários comuns para algoritmos de Reinforcement Learning
-
-# %% [markdown]
-# ## Importações
-
 # %%
 import gymnasium as gym
 import imageio
@@ -17,15 +11,7 @@ import seaborn as sns
 import pandas as pd
 from tqdm.auto import tqdm
 
-# %% [markdown]
-# ## Funções auxiliares para visualização
-
-# %%
 def plotar_metricas(episodio_len: list[int], episodio_return: list[float], janela: int = 100) -> None:
-    """
-    Usa Pandas + Seaborn para plotar tamanho do episódio e retorno com média móvel.
-    """
-
     df = pd.DataFrame({
         'episodio': np.arange(len(episodio_len)),
         'tamanho': episodio_len,
@@ -55,7 +41,6 @@ def plotar_metricas(episodio_len: list[int], episodio_return: list[float], janel
     plt.tight_layout()
     plt.show()
 
-# %%
 def visualizar_politica(
     Pi: np.ndarray,
     env_name: str,
@@ -174,7 +159,6 @@ def visualizar_politica(
     finally:
         env.close()
 
-# %%
 def plot_V_grid(
     V: np.ndarray,
     env_name: str,
@@ -349,8 +333,6 @@ def plot_tabular(
 
     return ax
 
-# %%
-# helpers de grid/máscaras
 def _grid_info_from_env(env_name: str, map_name: str | None = None, is_slippery: bool = False):
     """
     Retorna (n_rows, n_cols, holes_set, cliffs_set, goals_set, start_rc)
@@ -543,7 +525,6 @@ def plot_trajetoria_gym(
     plt.tight_layout()
     plt.show()
 
-# %%
 def gerar_gif_simulacao(
     Pi: np.ndarray,
     env,
@@ -628,3 +609,5 @@ def gerar_gif_simulacao(
     return path_gif
 
 
+
+# %%
