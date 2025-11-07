@@ -143,19 +143,82 @@ def n_step_sarsa(
     for _ in tqdm(range(1, N + 1), desc=f"Episódios (n-step SARSA, n={n})", leave=True):
 
         # Reset do ambiente
-        state, _ = env.reset()
+        s, _ = env.reset()
 
-        ############################################################################
-        # Implementação aqui
-        # Dica:
-        # usar
-        # próximo estado, recompensa, terminated (flag), truncated (flag), _ = env.step(ação)
-        # para fazer a transição de um estado para o outro dada uma ação do agente
-
-
-
-
-        ############################################################################
+        # Buffers para armazenar sequência de estados, ações e recompensas
+        S = [s]  # estados: S[0] = s_0
+        A = []   # ações: A[t] = a_t
+        R = [0.0]  # recompensas: R[0] não usado, R[t] = r_t (recompensa após ação A[t-1])
+        
+        # Seleciona ação inicial
+        probs = Pi[s]
+        if probs.sum() > 0:
+            probs = probs / probs.sum()
+        else:
+            probs = np.full(n_actions, 1.0 / n_actions)
+        a = int(rng.choice(n_actions, p=probs))
+        A.append(a)
+        
+        G = 0.0
+        t = 0
+        T_end = T
+        
+        while True:
+            if t < T:
+                # Executa ação A[t] e observa próximo estado e recompensa
+                s_next, r, terminated, truncated, _ = env.step(a)
+                
+                S.append(s_next)  # S[t+1] = s_next
+                R.append(r)       # R[t+1] = r
+                G += r
+                t += 1
+                
+                if terminated or truncated:
+                    T_end = t
+                
+                if not (terminated or truncated) and t < T:
+                    # Seleciona próxima ação usando política ε-gulosa
+                    probs_next = Pi[s_next]
+                    if probs_next.sum() > 0:
+                        probs_next = probs_next / probs_next.sum()
+                    else:
+                        probs_next = np.full(n_actions, 1.0 / n_actions)
+                    a_next = int(rng.choice(n_actions, p=probs_next))
+                    A.append(a_next)
+                    a = a_next
+                    s = s_next
+            
+            # Atualiza Q para estados visitados há n passos (tau = t - n)
+            tau = t - n
+            if tau >= 0:
+                s_tau = S[tau]
+                a_tau = A[tau]
+                numero_de_visitas[s_tau, a_tau] += 1
+                
+                # Calcula alvo n-passos
+                td_target = _alvo_n_passos(S, A, R, tau, n, T_end, gamma, Q)
+                
+                # Atualização: Q(s_τ, a_τ) ← Q(s_τ, a_τ) + α[G_τ - Q(s_τ, a_τ)]
+                Q[s_tau, a_tau] += alpha * (td_target - Q[s_tau, a_tau])
+                
+                # Atualiza política ε-gulosa
+                _atualiza_Pi(Pi, Q, s_tau, epsilon)
+            
+            if terminated or truncated:
+                # Atualiza estados restantes (tau de T_end - n até T_end - 1)
+                for tau in range(max(0, T_end - n), T_end):
+                    s_tau = S[tau]
+                    a_tau = A[tau]
+                    numero_de_visitas[s_tau, a_tau] += 1
+                    
+                    td_target = _alvo_n_passos(S, A, R, tau, n, T_end, gamma, Q)
+                    Q[s_tau, a_tau] += alpha * (td_target - Q[s_tau, a_tau])
+                    
+                    _atualiza_Pi(Pi, Q, s_tau, epsilon)
+                break
+        
+        episodio_T.append(t)
+        episodio_G.append(G)
 
     return Q, Pi, numero_de_visitas, N, episodio_T, episodio_G
 

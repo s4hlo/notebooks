@@ -123,17 +123,58 @@ def q_learning(
     for _ in tqdm(range(1, N + 1), desc="Episódios (Q-learning)", leave=True):
         s, _ = env.reset()
 
-        ############################################################################
-        # Implementação aqui
-        # Dica:
-        # usar
-        # próximo estado, recompensa, terminated (flag), truncated (flag), _ = env.step(ação)
-        # para fazer a transição de um estado para o outro dada uma ação do agente
-
-
-
-
-        ############################################################################
+        # Seleciona ação inicial usando política de comportamento (ε-gulosa)
+        probs = Pi_behavior[s]
+        if probs.sum() > 0:
+            probs = probs / probs.sum()
+        else:
+            probs = np.full(n_actions, 1.0 / n_actions)
+        a = int(rng.choice(n_actions, p=probs))
+        
+        G = 0.0
+        t = 0
+        
+        while True:
+            # Executa ação e observa próximo estado e recompensa
+            s_next, r, terminated, truncated, _ = env.step(a)
+            
+            G += r
+            t += 1
+            numero_de_visitas[s, a] += 1
+            
+            if terminated or truncated:
+                # Estado terminal: Q(s,a) = r
+                Q[s, a] += alpha * (r - Q[s, a])
+            else:
+                # Q-learning: usa max_a' Q(s',a') em vez de Q(s',a') específico
+                max_q_next = np.max(Q[s_next, :])
+                
+                # Atualização Q-learning: Q(s,a) ← Q(s,a) + α[r + γ max_a' Q(s',a') - Q(s,a)]
+                Q[s, a] += alpha * (r + gamma * max_q_next - Q[s, a])
+                
+                # Seleciona próxima ação usando política de comportamento (ε-gulosa)
+                probs_next = Pi_behavior[s_next]
+                if probs_next.sum() > 0:
+                    probs_next = probs_next / probs_next.sum()
+                else:
+                    probs_next = np.full(n_actions, 1.0 / n_actions)
+                a = int(rng.choice(n_actions, p=probs_next))
+                s = s_next
+            
+            # Atualiza política de comportamento (ε-gulosa)
+            a_star = int(np.argmax(Q[s]))
+            Pi_behavior[s, :] = epsilon / n_actions
+            Pi_behavior[s, a_star] += 1.0 - epsilon
+            
+            # Atualiza política alvo (gulosa/determinística)
+            Pi_target[s, :] = 0.0
+            Pi_target[s, a_star] = 1.0
+            
+            if terminated or truncated:
+                break
+        
+        episodio_T.append(t)
+        episodio_G.append(G)
 
     return Q, Pi_target, numero_de_visitas, N, episodio_T, episodio_G
 
