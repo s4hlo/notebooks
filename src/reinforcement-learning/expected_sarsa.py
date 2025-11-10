@@ -19,7 +19,7 @@ from IPython.display import Image
 # %%
 ambiente = 'CliffWalking-v1'
 render_mode = 'rgb_array'
-env = gym.make(ambiente, render_mode=render_mode)
+# env = gym.make(ambiente, render_mode=render_mode)  # Comentado para evitar criação ao importar
 
 # %%
 def expected_sarsa(
@@ -102,44 +102,46 @@ def expected_sarsa(
     return Q, Pi, numero_de_visitas, N, episodio_T, episodio_G
 
 # %%
-EPISODIOS = 5000
-ALPHA     = 0.01
-GAMMA     = 0.9
-EPSILON   = 0.3
-SEED      = 42
+# Código de exemplo para notebooks - descomente quando executar como notebook
+# EPISODIOS = 5000
+# ALPHA     = 0.01
+# GAMMA     = 0.9
+# EPSILON   = 0.3
+# SEED      = 42
 
-# %%
-Q, Pi, numero_de_visitas, k, T, G = expected_sarsa(
-    env,
-    gamma=GAMMA,
-    N=EPISODIOS,
-    epsilon=EPSILON,
-    alpha=ALPHA,
-    seed=SEED
-)
+# # %%
+# env = gym.make(ambiente, render_mode=render_mode)
+# Q, Pi, numero_de_visitas, k, T, G = expected_sarsa(
+#     env,
+#     gamma=GAMMA,
+#     N=EPISODIOS,
+#     epsilon=EPSILON,
+#     alpha=ALPHA,
+#     seed=SEED
+# )
 
-V = np.sum(Pi * Q, axis=1)
+# V = np.sum(Pi * Q, axis=1)
 
-# %%
-plotar_metricas(T, G)
-visualizar_politica(Pi, ambiente)
-estados, acoes, recompensas = simular_trajetoria_gym(Pi, "CliffWalking-v1", max_steps=200)
-plot_trajetoria_gym("CliffWalking-v1", estados, titulo="Trajetória (gulosa)")
+# # %%
+# plotar_metricas(T, G)
+# visualizar_politica(Pi, ambiente)
+# estados, acoes, recompensas = simular_trajetoria_gym(Pi, "CliffWalking-v1", max_steps=200)
+# plot_trajetoria_gym("CliffWalking-v1", estados, titulo="Trajetória (gulosa)")
 
-# %%
-env = gym.make(ambiente, render_mode="rgb_array")
-path_gif="politica.gif"
-gif = gerar_gif_simulacao(Pi, env, path_gif=path_gif, n_episodios=10, greedy=False)
+# # %%
+# env = gym.make(ambiente, render_mode="rgb_array")
+# path_gif="politica.gif"
+# gif = gerar_gif_simulacao(Pi, env, path_gif=path_gif, n_episodios=10, greedy=False)
 
-# %%
-Image(filename=path_gif)
+# # %%
+# Image(filename=path_gif)
 
-# %%
-plot_tabular(Q, kind="Q")
+# # %%
+# plot_tabular(Q, kind="Q")
 
-# %%
-plot_tabular(Pi, kind="Pi")
+# # %%
+# plot_tabular(Pi, kind="Pi")
 
-# %%
-print(ambiente)
-_ = plot_tabular(V, kind="V", env_name=ambiente, center_zero=False)
+# # %%
+# print(ambiente)
+# _ = plot_tabular(V, kind="V", env_name=ambiente, center_zero=False)

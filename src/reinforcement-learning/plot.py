@@ -117,7 +117,7 @@ def plot_with_choice(M, N, choices):
                 if highlight_matrix[row, col] == 0:
                     highlight_matrix[row, col] = 6
     
-    colors = ['#808080', '#000000', '#000000', '#0000FF', '#FF0000', '#FFB6C1', '#ADD8E6']
+    colors = ['#808080', '#000000', '#000000', '#0000FF', '#FF0000', '#FFB6C1', '#9999FF']
     cmap = ListedColormap(colors)
     
     N2 = N * N
@@ -397,7 +397,241 @@ def algorithm_x_with_gif(n, givens, output_gif='algorithm_x.gif'):
     return final_choices
 
 # %%
-M, N = build_exact_cover(n=3)
+class DLXNode:
+    def __init__(self, row=-1, col=-1):
+        self.row = row
+        self.col = col
+        self.up = self
+        self.down = self
+        self.left = self
+        self.right = self
+        self.header = None
+        self.size = 0
+
+# %%
+def build_dlx_structure(M, N):
+    M_dense = M.toarray()
+    rows, cols = M_dense.shape
+    
+    root = DLXNode()
+    headers = [DLXNode(-1, c) for c in range(cols)]
+    
+    for i, header in enumerate(headers):
+        header.header = header
+        header.size = int(np.sum(M_dense[:, i]))
+        if i == 0:
+            header.left = root
+            root.right = header
+        else:
+            header.left = headers[i-1]
+            headers[i-1].right = header
+        if i == len(headers) - 1:
+            header.right = root
+            root.left = header
+    
+    nodes_by_row = {}
+    last_node_in_col = {c: headers[c] for c in range(cols)}
+    
+    for r in range(rows):
+        row_nodes = []
+        for c in range(cols):
+            if M_dense[r, c] == 1:
+                node = DLXNode(r, c)
+                node.header = headers[c]
+                row_nodes.append(node)
+                
+                last_node = last_node_in_col[c]
+                last_node.down = node
+                node.up = last_node
+                node.down = headers[c]
+                headers[c].up = node
+                last_node_in_col[c] = node
+        if row_nodes:
+            for i, node in enumerate(row_nodes):
+                if i == 0:
+                    node.left = row_nodes[-1]
+                    row_nodes[-1].right = node
+                else:
+                    node.left = row_nodes[i-1]
+                    row_nodes[i-1].right = node
+            nodes_by_row[r] = row_nodes
+    
+    return root, headers, nodes_by_row
+
+# %%
+def cover_column(header):
+    header.right.left = header.left
+    header.left.right = header.right
+    
+    node = header.down
+    while node != header:
+        right_node = node.right
+        while right_node != node:
+            right_node.up.down = right_node.down
+            right_node.down.up = right_node.up
+            right_node.header.size -= 1
+            right_node = right_node.right
+        node = node.down
+
+# %%
+def uncover_column(header):
+    node = header.up
+    while node != header:
+        left_node = node.left
+        while left_node != node:
+            left_node.up.down = left_node
+            left_node.down.up = left_node
+            left_node.header.size += 1
+            left_node = left_node.left
+        node = node.up
+    
+    header.right.left = header
+    header.left.right = header
+
+# %%
+def dlx_with_gif(n, givens, output_gif='dlx_algorithm.gif'):
+    import tempfile
+    import imageio
+    import os
+    
+    M, N = build_exact_cover(n)
+    M_dense = M.toarray()
+    
+    given_rows = set()
+    for x, y, value in givens:
+        given_row = x * N * N + y * N + value
+        given_rows.add(given_row)
+    
+    covered_cols = set()
+    for given_row in given_rows:
+        cols = np.where(M_dense[given_row, :] == 1)[0]
+        covered_cols.update(cols)
+    
+    conflicting_rows = set()
+    for col in covered_cols:
+        rows_with_one = np.where(M_dense[:, col] == 1)[0]
+        conflicting_rows.update(rows_with_one)
+    conflicting_rows -= given_rows
+    
+    root, headers, nodes_by_row = build_dlx_structure(M, N)
+    
+    for given_row in given_rows:
+        if given_row in nodes_by_row:
+            for node in nodes_by_row[given_row]:
+                if node.header.size > 0:
+                    cover_column(node.header)
+    
+    for conflicting_row in conflicting_rows:
+        if conflicting_row in nodes_by_row:
+            for node in nodes_by_row[conflicting_row]:
+                if node.header.size > 0:
+                    cover_column(node.header)
+    
+    temp_dir = tempfile.mkdtemp()
+    image_files = []
+    frame_count = 0
+    
+    solution = []
+    for x, y, value in givens:
+        given_row = x * N * N + y * N + value
+        solution.append(given_row)
+    
+    def solve(root, sol, depth=0):
+        nonlocal frame_count
+        
+        if root.right == root:
+            final_choices = []
+            for row in sol:
+                x = row // (N * N)
+                y = (row // N) % N
+                value = row % N
+                final_choices.append((x, y, value))
+            save_plot_with_choice(M, N, final_choices, os.path.join(temp_dir, f'frame_{frame_count:04d}.png'))
+            image_files.append(os.path.join(temp_dir, f'frame_{frame_count:04d}.png'))
+            frame_count += 1
+            return sol
+        
+        col = root.right
+        c = col
+        while c != root:
+            if c.size < col.size:
+                col = c
+            c = c.right
+        
+        if col.size == 0:
+            return None
+        
+        cover_column(col)
+        
+        node = col.down
+        while node != col:
+            new_sol = sol + [node.row]
+            
+            current_choices = []
+            for r in new_sol:
+                x = r // (N * N)
+                y = (r // N) % N
+                v = r % N
+                current_choices.append((x, y, v))
+            
+            save_plot_with_choice(M, N, current_choices, os.path.join(temp_dir, f'frame_{frame_count:04d}.png'))
+            image_files.append(os.path.join(temp_dir, f'frame_{frame_count:04d}.png'))
+            frame_count += 1
+            
+            right_node = node.right
+            while right_node != node:
+                cover_column(right_node.header)
+                right_node = right_node.right
+            
+            result = solve(root, new_sol, depth + 1)
+            if result is not None:
+                return result
+            
+            left_node = node.left
+            while left_node != node:
+                uncover_column(left_node.header)
+                left_node = left_node.left
+            
+            node = node.down
+        
+        uncover_column(col)
+        return None
+    
+    result = solve(root, solution)
+    
+    if result is None:
+        print("No solution found")
+        return None
+    
+    final_choices = []
+    for row in result:
+        x = row // (N * N)
+        y = (row // N) % N
+        value = row % N
+        final_choices.append((x, y, value))
+    
+    if len(image_files) > 0:
+        from PIL import Image
+        images = []
+        target_size = None
+        for f in image_files:
+            img = Image.open(f)
+            if target_size is None:
+                target_size = img.size
+            else:
+                img = img.resize(target_size, Image.Resampling.LANCZOS)
+            images.append(np.array(img))
+        imageio.mimsave(output_gif, images, duration=0.1)
+        print(f"GIF saved to {output_gif}")
+    
+    for f in image_files:
+        os.remove(f)
+    os.rmdir(temp_dir)
+    
+    return final_choices
+
+# %%
+M, N = build_exact_cover(n=2)
 print(f"N = {N}")
 print(f"Matrix shape: {M.shape}")
 print(f"Number of ones (nnz): {M.nnz}")

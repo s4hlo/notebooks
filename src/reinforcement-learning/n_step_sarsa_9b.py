@@ -35,7 +35,7 @@ from utils_rl import (
 # Configura o ambiente
 ambiente = 'CliffWalking-v1'
 render_mode = 'rgb_array'  # retorna imagens do ambiente como arrays de pixels
-env = gym.make(ambiente, render_mode=render_mode)
+# env = gym.make(ambiente, render_mode=render_mode)  # Comentado para evitar criação ao importar
 
 # %% [markdown]
 # ## Algoritmo: n-step Sarsa
@@ -229,64 +229,64 @@ def n_step_sarsa(
 # ### Simulação
 
 # %%
-# Hiper-parâmetros principais
-EPISODIOS = 5000  # @param {type:"integer"}  # número de episódios
-NSTEP     = 1     # @param {type:"integer"}
-ALPHA     = 0.01  # @param {type:"number"}
-GAMMA     = 0.1   # @param {type:"number"}
-EPSILON   = 0.1   # @param {type:"number"}
-SEED      = 42    # @param {type:"integer"}
+# Código de exemplo para notebooks - descomente quando executar como notebook
+# EPISODIOS = 5000  # @param {type:"integer"}  # número de episódios
+# NSTEP     = 1     # @param {type:"integer"}
+# ALPHA     = 0.01  # @param {type:"number"}
+# GAMMA     = 0.1   # @param {type:"number"}
+# EPSILON   = 0.1   # @param {type:"number"}
+# SEED      = 42    # @param {type:"integer"}
 
-# %%
-# Sarsa
-Q, Pi, numero_de_visitas, k, T, G = n_step_sarsa(
-    env,
-    n=NSTEP,
-    gamma=GAMMA,
-    N=EPISODIOS,
-    epsilon=EPSILON,
-    alpha=ALPHA,
-    seed=SEED
-)
+# # %%
+# # env = gym.make(ambiente, render_mode=render_mode)
+# # Q, Pi, numero_de_visitas, k, T, G = n_step_sarsa(
+# #     env,
+# #     n=NSTEP,
+# #     gamma=GAMMA,
+# #     N=EPISODIOS,
+# #     epsilon=EPSILON,
+# #     alpha=ALPHA,
+# #     seed=SEED
+# # )
 
-# Derivar V a partir de Q:
-V = np.sum(Pi * Q, axis=1)
+# # Derivar V a partir de Q:
+# V = np.sum(Pi * Q, axis=1)
 
 # %% [markdown]
 # ### Visualização
 
-# %%
-plotar_metricas(T, G)
+# # %%
+# plotar_metricas(T, G)
 
-# %%
-visualizar_politica(Pi, ambiente)
+# # %%
+# visualizar_politica(Pi, ambiente)
 
-# %%
-estados, acoes, recompensas = simular_trajetoria_gym(Pi, ambiente, max_steps=200)
-plot_trajetoria_gym(ambiente, estados, titulo="Trajetória (gulosa)")
+# # %%
+# estados, acoes, recompensas = simular_trajetoria_gym(Pi, ambiente, max_steps=200)
+# plot_trajetoria_gym(ambiente, estados, titulo="Trajetória (gulosa)")
 
-# %%
-# Recria ambiente para renderizar
-env = gym.make(ambiente, render_mode="rgb_array")
-path_gif="politica.gif"
-gif = gerar_gif_simulacao(Pi, env, path_gif=path_gif, n_episodios=10, greedy=False)
+# # %%
+# # Recria ambiente para renderizar
+# env = gym.make(ambiente, render_mode="rgb_array")
+# path_gif="politica.gif"
+# gif = gerar_gif_simulacao(Pi, env, path_gif=path_gif, n_episodios=10, greedy=False)
 
-# %%
-# Exibe o GIF diretamente no notebook
-Image(filename=path_gif)
+# # %%
+# # Exibe o GIF diretamente no notebook
+# Image(filename=path_gif)
 
-# %%
-# Q: ndarray (n_estados, n_acoes)
-plot_tabular(Q, kind="Q")
+# # %%
+# # Q: ndarray (n_estados, n_acoes)
+# plot_tabular(Q, kind="Q")
 
-# %%
-# Pi: ndarray (n_estados, n_acoes)
-plot_tabular(Pi, kind="Pi")
+# # %%
+# # Pi: ndarray (n_estados, n_acoes)
+# plot_tabular(Pi, kind="Pi")
 
-# %%
-# V: ndarray (n_estados,)
-print(ambiente)
-_ = plot_tabular(V, kind="V", env_name=ambiente, center_zero=False)
+# # %%
+# # V: ndarray (n_estados,)
+# print(ambiente)
+# _ = plot_tabular(V, kind="V", env_name=ambiente, center_zero=False)
 
 # %% [markdown]
 # # Tarefa:
