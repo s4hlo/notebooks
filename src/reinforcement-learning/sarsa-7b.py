@@ -705,19 +705,55 @@ def sarsa(
     for k in tqdm(range(1, N + 1), desc="Episódios (SARSA)", leave=True):
         # Reset para o estado inicial (s0)
         s, _ = env.reset()
-
-
-        ############################################################################
-        # Implementação aqui
-        # Dica:
-        # usar
-        # próximo estado, recompensa, terminated (flag), truncated (flag), _ = env.step(ação)
-        # para fazer a trasição de um estado para o outro dada uma ação do agente
-
-
-
-
-        ############################################################################
+        
+        # Seleciona ação inicial usando política ε-gulosa
+        if rng.random() < epsilon:
+            a = rng.integers(0, n_actions)
+        else:
+            a = int(np.argmax(Q[s]))
+        
+        G = 0.0  # Retorno do episódio
+        t = 0    # Contador de passos
+        
+        while True:
+            # Executa ação a no estado s
+            s_next, r, terminated, truncated, _ = env.step(a)
+            
+            # Atualiza contadores
+            numero_de_visitas[s, a] += 1
+            G += r
+            t += 1
+            
+            # Verifica se o episódio terminou
+            if terminated or truncated:
+                # Atualização final: Q(s, a) ← Q(s, a) + α[r - Q(s, a)]
+                Q[s, a] += alpha * (r - Q[s, a])
+                # Atualiza política ε-suave
+                a_star = int(np.argmax(Q[s]))
+                Pi[s, :] = epsilon / n_actions
+                Pi[s, a_star] += 1.0 - epsilon
+                break
+            
+            # Seleciona próxima ação usando política ε-gulosa
+            if rng.random() < epsilon:
+                a_next = rng.integers(0, n_actions)
+            else:
+                a_next = int(np.argmax(Q[s_next]))
+            
+            # Atualização SARSA: Q(s, a) ← Q(s, a) + α[r + γ*Q(s', a') - Q(s, a)]
+            Q[s, a] += alpha * (r + gamma * Q[s_next, a_next] - Q[s, a])
+            
+            # Atualiza política ε-suave
+            a_star = int(np.argmax(Q[s]))
+            Pi[s, :] = epsilon / n_actions
+            Pi[s, a_star] += 1.0 - epsilon
+            
+            # Avança para próximo estado e ação
+            s = s_next
+            a = a_next
+        
+        episodio_T.append(t)
+        episodio_G.append(G)
 
     return Q, Pi, numero_de_visitas, N, episodio_T, episodio_G
 

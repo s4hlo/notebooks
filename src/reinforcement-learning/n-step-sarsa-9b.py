@@ -749,18 +749,69 @@ def n_step_sarsa(
 
         # Reset do ambiente
         state, _ = env.reset()
-
-        ############################################################################
-        # Implementação aqui
-        # Dica:
-        # usar
-        # próximo estado, recompensa, terminated (flag), truncated (flag), _ = env.step(ação)
-        # para fazer a trasição de um estado para o outro dada uma ação do agente
-
-
-
-
-        ############################################################################
+        
+        # Buffers para armazenar sequência (S, A, R)
+        S = [int(state)]  # Estados
+        A = []            # Ações
+        R = [0.0]         # Recompensas (R[0] não é usado, mas facilita indexação)
+        
+        # Seleciona ação inicial usando política ε-gulosa
+        if rng.random() < epsilon:
+            a = rng.integers(0, n_actions)
+        else:
+            a = int(np.argmax(Q[state]))
+        A.append(a)
+        
+        G = 0.0  # Retorno total do episódio
+        t = 0    # Contador de passos
+        T_end = T  # T_end será atualizado quando o episódio terminar
+        
+        while True:
+            # Executa ação a no estado atual
+            state_next, r, terminated, truncated, _ = env.step(a)
+            state_next = int(state_next)
+            
+            # Armazena recompensa e próximo estado
+            R.append(float(r))
+            S.append(state_next)
+            
+            # Atualiza contadores
+            G += r
+            t += 1
+            
+            # Verifica se o episódio terminou
+            if terminated or truncated:
+                T_end = t
+                break
+            
+            # Seleciona próxima ação usando política ε-gulosa
+            if rng.random() < epsilon:
+                a_next = rng.integers(0, n_actions)
+            else:
+                a_next = int(np.argmax(Q[state_next]))
+            A.append(a_next)
+            
+            # Atualiza Q para estados que já têm informação suficiente (n passos atrás)
+            tau = t - n
+            if tau >= 0:
+                _atualiza_Q(Q, (S, A, R), tau, n, T_end, alpha, gamma)
+                numero_de_visitas[S[tau], A[tau]] += 1
+                _atualiza_Pi(Pi, Q, S[tau], epsilon)
+            
+            # Avança para próximo estado e ação
+            state = state_next
+            a = a_next
+        
+        # Atualiza estados restantes após término do episódio
+        # Só atualiza estados que ainda não foram atualizados (últimos n-1 estados)
+        for tau in range(max(0, T_end - n + 1), T_end):
+            if tau < len(S) and tau < len(A):
+                _atualiza_Q(Q, (S, A, R), tau, n, T_end, alpha, gamma)
+                numero_de_visitas[S[tau], A[tau]] += 1
+                _atualiza_Pi(Pi, Q, S[tau], epsilon)
+        
+        episodio_T.append(t)
+        episodio_G.append(G)
 
     return Q, Pi, numero_de_visitas, N, episodio_T, episodio_G
 

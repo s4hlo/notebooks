@@ -746,18 +746,52 @@ def q_learning(
 
     for _ in tqdm(range(1, N + 1), desc="Episódios (Q-learning)", leave=True):
         s, _ = env.reset()
-
-        ############################################################################
-        # Implementação aqui
-        # Dica:
-        # usar
-        # próximo estado, recompensa, terminated (flag), truncated (flag), _ = env.step(ação)
-        # para fazer a trasição de um estado para o outro dada uma ação do agente
-
-
-
-
-        ############################################################################
+        
+        G = 0.0  # Retorno do episódio
+        t = 0    # Contador de passos
+        
+        while True:
+            # Seleciona ação da política de comportamento (ε-gulosa)
+            if rng.random() < epsilon:
+                a = rng.integers(0, n_actions)
+            else:
+                a = int(np.argmax(Q[s]))
+            
+            # Executa ação a no estado s
+            s_next, r, terminated, truncated, _ = env.step(a)
+            
+            # Atualiza contadores
+            numero_de_visitas[s, a] += 1
+            G += r
+            t += 1
+            
+            # Atualização Q-learning: Q(s, a) ← Q(s, a) + α[r + γ*max_{a'}Q(s', a') - Q(s, a)]
+            if terminated or truncated:
+                # Se terminou, não há próximo estado
+                Q[s, a] += alpha * (r - Q[s, a])
+            else:
+                Q[s, a] += alpha * (r + gamma * np.max(Q[s_next]) - Q[s, a])
+            
+            # Atualiza política alvo (gulosa)
+            a_star = int(np.argmax(Q[s]))
+            Pi_target[s, :] = 0.0
+            Pi_target[s, a_star] = 1.0
+            
+            # Atualiza política de comportamento (ε-suave)
+            Pi_behavior[s, :] = epsilon / n_actions
+            Pi_behavior[s, a_star] += 1.0 - epsilon
+            
+            # Verifica se o episódio terminou
+            if terminated or truncated:
+                break
+            
+            # Avança para próximo estado
+            s = s_next
+        
+        # Avalia desempenho da política alvo após cada episódio
+        t_eval, G_eval = avaliar_desempenho(env, Pi_target, max_steps=200)
+        episodio_T.append(t_eval)
+        episodio_G.append(G_eval)
 
     return Q, Pi_target, numero_de_visitas, N, episodio_T, episodio_G
 
