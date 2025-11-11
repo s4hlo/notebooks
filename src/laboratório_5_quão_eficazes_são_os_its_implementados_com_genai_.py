@@ -41,19 +41,18 @@ from google.colab import userdata
 # IMPORTANTE: Nunca coloque sua chave diretamente no código em produção.
 # Use variáveis de ambiente ou o gerenciador de "Secrets" do seu notebook (ex: Google Colab).
 # Para este exemplo, vamos supor que você a colou aqui:
-API_KEY = userdata.get('API_KEY')
-
+API_KEY = "AIzaSyB6GMwIWCu19dDv_WeUVh8-6o-em7pz4x4"
 if API_KEY is not None:
-  print("API_KEY loaded successfully.")
+    print("API_KEY loaded successfully.")
 else:
-  print("API_KEY not found in environment variables.")
+    print("API_KEY not found in environment variables.")
 
 import google.generativeai as genai
 
 genai.configure(api_key=API_KEY)
 
 # Escolher o modelo que vamos usar
-llm = genai.GenerativeModel('models/gemini-2.5-flash')
+llm = genai.GenerativeModel("models/gemini-2.5-flash")
 
 print(llm.generate_content("ping").text)
 print(llm.generate_content("já falei ping?").text)
@@ -87,8 +86,11 @@ print(chat.history)
 #### 📄 **Código-fonte do ITS**
 """
 
+
 # --- Modelo de Domínio ---
-def etapa_0_prep_modelo_dominio(llm, dominio, n_topicos=10, audiencia="4o ano do Ensino Fundamental"):
+def etapa_0_prep_modelo_dominio(
+    llm, dominio, n_topicos=10, audiencia="4o ano do Ensino Fundamental"
+):
     """
     Define o Modelo de Domínio em tópicos, cada um com explicação, pré-requisito, e exercício.
     """
@@ -106,30 +108,34 @@ def etapa_0_prep_modelo_dominio(llm, dominio, n_topicos=10, audiencia="4o ano do
         "soma_fracoes": {
             "explicacao": "Para somar frações, primeiro encontre um denominador comum. Depois, some os numeradores.",
             "pre_requisitos": ["denominador_comum"],
-            "exercicio": "Quanto é 1/2 + 1/4?"
+            "exercicio": "Quanto é 1/2 + 1/4?",
         },
         "denominador_comum": {
             "explicacao": "O denominador comum é um múltiplo compartilhado pelos denominadores de duas ou mais frações.",
-            "pre_requisitos":[],
-            "exercicio": "Qual é o menor denominador comum para 1/3 e 1/5?"
+            "pre_requisitos": [],
+            "exercicio": "Qual é o menor denominador comum para 1/3 e 1/5?",
         },
         "subtracao_fracoes": {
             "explicacao": "A subtração de frações segue a mesma lógica da soma: encontre um denominador comum e depois subtraia os numeradores.",
             "pre_requisitos": ["denominador_comum", "soma_fracoes"],
-            "exercicio": "Quanto é 3/4 - 1/4?"
-        }
+            "exercicio": "Quanto é 3/4 - 1/4?",
+        },
     }
     # Transformar o dicionário acima em uma string mais legível:
     exemplo_base_conhecimento = json.dumps(exemplo_base_conhecimento, indent=4)
     prompt_dominio += f"\n Exemplo:\n {exemplo_base_conhecimento}"
     # Gerar modelo de domínio
-    modelo_dominio = llm._______________(prompt_dominio).text
+    modelo_dominio = llm.generate_content(prompt_dominio).text
     return modelo_dominio
+
 
 # Testando
 
-modelo_dominio = etapa_0_prep_modelo_dominio(_____, _____, _____, _____) # como chamar essa função corretamente?
+modelo_dominio = etapa_0_prep_modelo_dominio(
+    llm, "matemática", 10, "4o ano do Ensino Fundamental"
+)
 print(modelo_dominio)
+
 
 # --- Modelo do Aluno ---
 def etapa_0_inicializar_aluno(modelo_dominio):
@@ -139,11 +145,13 @@ def etapa_0_inicializar_aluno(modelo_dominio):
     modelo_aluno = {topico: "iniciante" for topico in modelo_dominio}
     return modelo_aluno
 
+
 # Testando
 
-modelo_aluno = etapa_0_inicializar_aluno(_____) # como chamar essa função corretamente?
+modelo_aluno = etapa_0_inicializar_aluno(modelo_dominio)
 print("---Modelo do Aluno---")
 print(modelo_aluno)
+
 
 # --- Modelo Pedagógico ---
 def etapa_1_selecao_proximo_topico(llm, modelo_aluno):
@@ -161,32 +169,60 @@ def etapa_1_selecao_proximo_topico(llm, modelo_aluno):
     """
     return llm.generate_content(prompt_selecao_tarefa).text
 
+
 # Testando
 
-decisao = etapa_1_selecao_proximo_topico(____, _____) # como chamar essa função corretamente?
-topico = decisao['proximo_topico']
+decisao = etapa_1_selecao_proximo_topico(llm, modelo_aluno)
+topico = decisao["proximo_topico"]
 print("---Próximo tópico---")
 print(decisao)
 
 # === Ainda não implementado ===
 
+
 def etapa_3_avaliacao_interacao_inicial(llm, chat, modelo_aluno):
-  """
-  Usa o LLM para avaliar a resposta inicial e atualizar o modelo do aluno.
-  """
-  mensagem_usuario = chat.history[-1].text
-  prompt_avaliacao = f"""
-  ...
-  ...
-  ...
-  ...
-  """
-  # modelo_aluno = {"topico1": "iniciante"}
-  # ...
-  # avaliacao = llm.generate_content(prompt_avaliacao).text
-  # ...
-  # modelo_aluno = {"topico1": "intermediário"}
-  return avaliacao, modelo_aluno
+    """
+    Usa o LLM para avaliar a resposta inicial e atualizar o modelo do aluno.
+    """
+
+    mensagem_usuario = chat.history[-1].text
+
+    prompt_avaliacao = f"""
+Você é um Sistema de Tutoria Inteligente.
+Avalie a resposta inicial do aluno e determine seu nível de maestria.
+
+**Modelo do Aluno atual**:\n {json.dumps(modelo_aluno, indent=4)}
+**Resposta do aluno**: "{mensagem_usuario}"
+
+Analise a resposta e determine:
+1. Qual tópico está sendo avaliado (baseado no contexto da conversa)
+2. O nível de maestria atual: "iniciante", "intermediário" ou "avançado"
+
+Retorne um JSON com as chaves:
+- "topico": nome do tópico avaliado
+- "nivel_maestria": nível determinado ("iniciante", "intermediário" ou "avançado")
+- "raciocinio": breve explicação (2-3 frases)
+"""
+
+    resposta_obj = llm.generate_content(prompt_avaliacao)
+    avaliacao_str = resposta_obj.text
+
+    inicio = avaliacao_str.find("{")
+    fim = avaliacao_str.rfind("}")
+
+    if inicio == -1 or fim == -1:
+        return modelo_aluno
+
+    json_limpo = avaliacao_str[inicio : fim + 1]
+
+    avaliacao = json.loads(json_limpo)
+
+    topico = avaliacao.get("topico")
+    nivel = avaliacao.get("nivel_maestria", "iniciante")
+    if topico:
+        modelo_aluno[topico] = nivel
+    return modelo_aluno
+
 
 # Testando
 
@@ -196,9 +232,12 @@ mensagem_aluno = "ping"
 
 resposta = chat.send_message(mensagem_aluno)
 
-modelo_aluno, modelo_aluno = etapa_3_avaliacao_interacao_inicial(llm, chat, modelo_aluno)
+modelo_aluno, modelo_aluno = etapa_3_avaliacao_interacao_inicial(
+    llm, chat, modelo_aluno
+)
 print("---Modelo do Aluno (pós avaliação de interação inicial) ---")
 print(modelo_aluno)
+
 
 def etapa_45_decidir_e_gerar_feedback(chat, exercicio):
     """
@@ -221,82 +260,97 @@ def etapa_45_decidir_e_gerar_feedback(chat, exercicio):
     resposta = chat.send_message(prompt_feedback)
     return resposta.text
 
+
 # Testando
 
-feedback = etapa_45_decidir_e_gerar_feedback(chat, exercicio=modelo_dominio[topico]['exercicio'])
+feedback = etapa_45_decidir_e_gerar_feedback(
+    chat, exercicio=modelo_dominio[topico]["exercicio"]
+)
 print(feedback)
 
 # === Ainda não implementado ===
 
+
 # --- Modelo do Aluno ---
-def etapa_7_atualizacao_pos_feedback(chat, modelo_aluno):
+def etapa_7_atualizacao_pos_feedback(llm, chat, modelo_aluno):
     """
     Atualiza o modelo do aluno com base no último ciclo de conversa.
     """
-    if len(chat.history>3):
-      # Atualize o modelo do aluno com  base n as últimas três mensagens do
-      # historico: interacao inicial, feedback, e interacao final do ciclo.
-      ciclo_interacao = chat.history[-3:]
-      # ...
-      # ...
-      # ...
-      # modelo_aluno = ...
+    if len(chat.history > 3):
+        # Atualize o modelo do aluno com  base n as últimas três mensagens do
+        # historico: interacao inicial, feedback, e interacao final do ciclo.
+        ciclo_interacao = chat.history[-3:]
+        prompt_atualizacao = f"""
+        Analise as últimas três mensagens do histórico e atualize o modelo do aluno.
+        Histórico: {ciclo_interacao}
+        Modelo atual: {json.dumps(modelo_aluno, indent=4)}
+        Retorne JSON com o modelo atualizado.
+        """
+        resposta_atualizacao = llm.generate_content(prompt_atualizacao).text
+        modelo_atualizado = json.loads(resposta_atualizacao)
+        modelo_aluno = modelo_atualizado
     return modelo_aluno
+
 
 # Testando
 
-modelo_aluno = etapa_7_atualizacao_pos_feedback(chat, modelo_aluno)
+modelo_aluno = etapa_7_atualizacao_pos_feedback(llm, chat, modelo_aluno)
 print(modelo_aluno)
 
 """#### **🔁 Controle e execução do ITS**"""
 
-def sistema_tutoria_inteligente_genai(llm, ____, ____, ____):
+
+def sistema_tutoria_inteligente_genai(llm, dominio, n_topicos, audiencia):
     """
     Inicia uma nova sessão de tutoria.
     """
-    prompt_sistema = {"role": "model", "parts": ["Você é um Sistema de Tutoria Inteligente (ITS)."]}
+    prompt_sistema = {
+        "role": "model",
+        "parts": ["Você é um Sistema de Tutoria Inteligente (ITS)."],
+    }
     chat = llm.start_chat(history=[prompt_sistema])
 
-    modelo_dominio = etapa_0_prep_modelo_dominio(...)
-    modelo_aluno = etapa_0_inicializar_aluno(...)
+    modelo_dominio = etapa_0_prep_modelo_dominio(llm, dominio, n_topicos, audiencia)
+    modelo_aluno = etapa_0_inicializar_aluno(modelo_dominio)
 
     # Enquanto houver topicos a aprender...
     while modelo_aluno:
 
-      # Etapa 1
-      decisao = etapa_1_selecao_proximo_topico(llm, modelo_aluno)
+        # Etapa 1
+        decisao = etapa_1_selecao_proximo_topico(llm, modelo_aluno)
 
-      explicacao = modelo_dominio[decisao['proximo_topico']]['explicacao']
-      exercicio = modelo_dominio[decisao['proximo_topico']]['exercicio']
+        explicacao = modelo_dominio[decisao["proximo_topico"]]["explicacao"]
+        exercicio = modelo_dominio[decisao["proximo_topico"]]["exercicio"]
 
-      print(explicacao)
-      print(exercicio)
+        print(explicacao)
+        print(exercicio)
 
-      # Etapa 2
-      mensagem_usuario = input("Usuário:")
+        # Etapa 2
+        mensagem_usuario = input("Usuário:")
 
-      # Etapa 3
-      modelo_aluno = etapa_3_avaliacao_interacao_inicial(...)
+        # Etapa 3
+        modelo_aluno = etapa_3_avaliacao_interacao_inicial(llm, chat, modelo_aluno)
 
-      # Etapas 4 e 5
-      feedback = etapa_45_decidir_e_gerar_feedback(...)
+        # Etapas 4 e 5
+        feedback = etapa_45_decidir_e_gerar_feedback(chat, exercicio)
 
-      print(feedback)
+        print(feedback)
 
-      # Etapa 6
-      mensagem_usuario = input("Usuário:") # etapa_7
+        # Etapa 6
+        mensagem_usuario = input("Usuário:")  # etapa_7
 
-      # Etapa 7
-      modelo_aluno = etapa_7_atualizacao_pos_feedback(...)
+        # Etapa 7
+        modelo_aluno = etapa_7_atualizacao_pos_feedback(llm, chat, modelo_aluno)
 
-      # Condição de parada: ter aprendido todos os tópicos
-      if modelo_aluno[decisao['proximo_topico']] == 'avançado':
-        # Removendo tópico já aprendido
-        modelo_aluno.pop(decisao['proximo_topico'])
+        # Condição de parada: ter aprendido todos os tópicos
+        if modelo_aluno[decisao["proximo_topico"]] == "avançado":
+            # Removendo tópico já aprendido
+            modelo_aluno.pop(decisao["proximo_topico"])
 
     return chat
 
-sistema_tutoria_inteligente_genai(...)
+
+sistema_tutoria_inteligente_genai(llm, "matemática", 10, "4o ano do Ensino Fundamental")
 
 """### Parte 3 - 📝 Tarefa
 
@@ -312,12 +366,47 @@ Seu notebook deve conter um relatório formulado abaixo, respondendo à seguinte
 
 ##### 1. Avalie a eficácia do seu ITS para apoiar a aprendizagem de três tipos de alunos: o aluno iniciante, o intermediário e o avançado.
 
-
 RESPOSTA:
+
+**Aluno Iniciante**: O ITS é eficaz ao começar pelos tópicos básicos sem pré-requisitos, seguindo uma progressão lógica. A avaliação inicial permite identificar o nível de conhecimento e adaptar o ensino. No entanto, pode ser lento para alunos que precisam de mais repetição.
+
+**Aluno Intermediário**: Funciona bem ao identificar tópicos já dominados e focar nos que precisam de reforço. A seleção adaptativa de tópicos baseada no modelo do aluno permite pular conteúdos já conhecidos. A limitação é que pode não detectar lacunas específicas em tópicos parcialmente aprendidos.
+
+**Aluno Avançado**: Menos eficaz, pois o sistema tende a seguir uma sequência linear mesmo quando o aluno já domina a maioria dos tópicos. A progressão pode ser muito lenta e não oferece desafios adequados ao nível avançado. Falta mecanismo para acelerar ou pular múltiplos tópicos simultaneamente.
 
 ##### 2. Faça uma simulação de tutoria fictícia de um **aluno iniciante** (interpretado por você) nos domínios de `fotossíntese` e `coesão textual`, quais são os prós e os contras dessa abordagem de tutoria?
 
+**Prós:**
+- Personalização através do modelo do aluno que acompanha o progresso
+- Feedback adaptativo gerado pelo LLM que se ajusta às respostas
+- Estruturação clara com explicações e exercícios por tópico
+- Respeita pré-requisitos, evitando sobrecarga cognitiva
+
+**Contras:**
+- Dependência da qualidade do prompt e do LLM pode gerar inconsistências
+- Falta validação robusta das respostas do LLM (pode classificar incorretamente)
+- Não há persistência de sessões anteriores
+- Pode ser lento para alunos que precisam de múltiplas tentativas
+- Ausência de recursos multimídia ou exemplos visuais
+- Feedback pode ser genérico demais ou muito técnico para iniciantes
+
 ##### 3. Quais seriam bons próximos passos para aprimorar essa implementação de tutoria?
+
+1. **Validação e Parsing Robusto**: Implementar tratamento de erros mais robusto para respostas do LLM, incluindo validação de JSON e fallbacks quando o parsing falha.
+
+2. **Persistência de Dados**: Salvar o modelo do aluno e histórico de interações para continuidade entre sessões.
+
+3. **Múltiplos Níveis de Dificuldade**: Expandir além de "iniciante/intermediário/avançado" para níveis mais granulares e permitir ajuste dinâmico.
+
+4. **Análise de Erros Padrão**: Identificar erros comuns dos alunos e fornecer explicações específicas para cada tipo de equívoco.
+
+5. **Aceleração para Alunos Avançados**: Permitir que alunos avançados pulem múltiplos tópicos ou façam testes de nivelamento inicial.
+
+6. **Recursos Multimídia**: Integrar exemplos visuais, diagramas ou animações para tópicos que se beneficiam disso (como fotossíntese).
+
+7. **Feedback Mais Estruturado**: Usar templates de feedback baseados em taxonomias pedagógicas (ex: Bloom) para garantir qualidade consistente.
+
+8. **Métricas de Eficácia**: Implementar tracking de tempo de aprendizado, taxa de acerto e satisfação do aluno para avaliar o sistema.
 
 .
 """
