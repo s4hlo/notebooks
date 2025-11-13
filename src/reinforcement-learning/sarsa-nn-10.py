@@ -921,4 +921,283 @@ _ = plot_tabular(V, kind="V", env_name=ambiente, center_zero=False)
 # - O PDF **NÃO** deve conter:
 #     - Códigos.
 
+# %%
+# Função auxiliar para plotar métricas comparativas
+def plotar_metricas_comparativas(
+    resultados: Dict[str, Tuple[List[int], List[float], List[float], List[float]]],
+    titulo: str = "Comparação de Hiperparâmetros"
+):
+    """
+    Plota métricas comparativas para múltiplas execuções.
+    
+    Parâmetros
+    ----------
+    resultados : dict[str, tuple[list[int], list[float], list[float], list[float]]]
+        Dicionário onde a chave é o label e o valor é (episodio_len, episodio_return, td_errors, eps_hist)
+    titulo : str
+        Título da figura
+    """
+    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(16, 12), sharex=True)
+    
+    # Plot 1 - Duração do episódio
+    for label, (T, G, td_err, eps) in resultados.items():
+        df = pd.DataFrame({
+            'episodio': np.arange(len(T)),
+            'tamanho': T
+        })
+        df['tamanho_ma'] = df['tamanho'].rolling(window=200).mean()
+        sns.lineplot(data=df, x='episodio', y='tamanho', ax=axs[0,0], alpha=0.2, linewidth=0.5)
+        sns.lineplot(data=df, x='episodio', y='tamanho_ma', ax=axs[0,0], label=label, linewidth=2)
+    
+    axs[0,0].set_ylabel('Passos por Episódio')
+    axs[0,0].legend()
+    axs[0,0].grid()
+    axs[0,0].set_title('Duração do Episódio')
+    
+    # Plot 2 - Retorno
+    for label, (T, G, td_err, eps) in resultados.items():
+        df = pd.DataFrame({
+            'episodio': np.arange(len(G)),
+            'retorno': G
+        })
+        df['retorno_ma'] = df['retorno'].rolling(window=200).mean()
+        sns.lineplot(data=df, x='episodio', y='retorno', ax=axs[0,1], alpha=0.2, linewidth=0.5)
+        sns.lineplot(data=df, x='episodio', y='retorno_ma', ax=axs[0,1], label=label, linewidth=2)
+    
+    axs[0,1].set_ylabel('Recompensa Total')
+    axs[0,1].legend()
+    axs[0,1].grid()
+    axs[0,1].set_title('Recompensa Total por Episódio')
+    
+    # Plot 3 - TD-error
+    for label, (T, G, td_err, eps) in resultados.items():
+        df = pd.DataFrame({
+            'episodio': np.arange(len(td_err)),
+            'td_error': td_err
+        })
+        df['td_ma'] = df['td_error'].rolling(window=200).mean()
+        sns.lineplot(data=df, x='episodio', y='td_error', ax=axs[1,0], alpha=0.2, linewidth=0.5)
+        sns.lineplot(data=df, x='episodio', y='td_ma', ax=axs[1,0], label=label, linewidth=2)
+    
+    axs[1,0].set_ylabel('TD-error')
+    axs[1,0].set_xlabel('Episódio')
+    axs[1,0].legend()
+    axs[1,0].grid()
+    axs[1,0].set_title('TD-error')
+    
+    # Plot 4 - Epsilon
+    for label, (T, G, td_err, eps) in resultados.items():
+        df = pd.DataFrame({
+            'episodio': np.arange(len(eps)),
+            'epsilon': eps
+        })
+        sns.lineplot(data=df, x='episodio', y='epsilon', ax=axs[1,1], label=label, linewidth=2)
+    
+    axs[1,1].set_ylabel('ε')
+    axs[1,1].set_xlabel('Episódio')
+    axs[1,1].legend()
+    axs[1,1].grid()
+    axs[1,1].set_title('Epsilon (ε)')
+    
+    fig.suptitle(titulo, y=1.02, fontsize=14)
+    plt.tight_layout()
+    plt.show()
 
+# %%
+# Função genérica para executar experimento variando um hiperparâmetro
+def executar_experimento_hiperparametro(
+    nome_hiperparametro: str,
+    valores: List[Union[int, float, tuple]],
+    base_config: dict,
+    is_slippery: bool = False
+):
+    """
+    Executa experimento variando um hiperparâmetro específico.
+    
+    Parâmetros
+    ----------
+    nome_hiperparametro : str
+        Nome do hiperparâmetro ('lr_opt', 'N', 'hidden', 'epsilon_mul')
+    valores : list
+        Lista de valores a testar
+    base_config : dict
+        Configuração base com todos os parâmetros
+    is_slippery : bool
+        Se True, usa ambiente escorregadio
+    """
+    print("=" * 60)
+    print(f"Experimento: Variando {nome_hiperparametro} (is_slippery={is_slippery})")
+    print("=" * 60)
+    
+    # Recria ambiente com is_slippery correto
+    env_exp = gym.make(
+        ambiente,
+        map_name=base_config.get('map_name', '4x4'),
+        is_slippery=is_slippery,
+        render_mode=render_mode
+    )
+    
+    resultados = {}
+    politicas = {}  # Armazena todas as políticas
+    
+    for valor in valores:
+        print(f"\nExecutando com {nome_hiperparametro}={valor}...")
+        
+        # Prepara configuração
+        config = base_config.copy()
+        config['env'] = env_exp
+        # Remove parâmetros que não são de sarsa_nn (já estão no env)
+        config.pop('is_slippery', None)
+        config.pop('map_name', None)
+        
+        # Substitui o hiperparâmetro que está sendo variado
+        if nome_hiperparametro == 'lr_opt':
+            config['lr_opt'] = valor
+        elif nome_hiperparametro == 'N':
+            config['N'] = valor
+        elif nome_hiperparametro == 'hidden':
+            config['hidden'] = valor
+        elif nome_hiperparametro == 'epsilon_mul':
+            config['epsilon_mul'] = valor
+        
+        # Executa SARSA com NN
+        Q_exp, Pi_exp, _, _, T_exp, G_exp, td_errors_exp, eps_hist_exp, _ = sarsa_nn(**config)
+        
+        # Armazena resultados
+        label = f"{nome_hiperparametro}={valor}"
+        resultados[label] = (T_exp, G_exp, td_errors_exp, eps_hist_exp)
+        politicas[valor] = Pi_exp
+    
+    env_exp.close()
+    
+    # Plota métricas comparativas
+    plotar_metricas_comparativas(
+        resultados,
+        f"Comparação: Variando {nome_hiperparametro} (is_slippery={is_slippery})"
+    )
+    
+    # Trajetória gulosa para cada valor testado
+    print(f"\nPlotando trajetórias gulosas para cada valor de {nome_hiperparametro}...")
+    for valor in valores:
+        estados_exp, _, _ = simular_trajetoria_gym(
+            politicas[valor],
+            ambiente,
+            map_name=base_config.get('map_name', '4x4'),
+            is_slippery=is_slippery,
+            max_steps=200
+        )
+        plot_trajetoria_gym(
+            ambiente,
+            estados_exp,
+            map_name=base_config.get('map_name', '4x4'),
+            is_slippery=is_slippery,
+            titulo=f"Trajetória Gulosa - {nome_hiperparametro}={valor} (slippery={is_slippery})"
+        )
+
+# %%
+# Configuração base
+BASE_CONFIG = dict(
+    gamma=0.9,
+    N=5000,
+    start_epsilon=1.0,
+    final_epsilon=0.1,
+    epsilon_mul=0.9999,
+    hidden=(16,),
+    lr_opt=0.05,
+    activation="relu",
+    solver="sgd",
+    momentum=0.0,
+    shuffle=False,
+    mlp_random_state=0,
+    map_name='4x4'
+)
+
+# Valores a variar para cada hiperparâmetro (escolha 2 para os experimentos)
+VALORES_LR_OPT = [0.01, 0.05, 0.1]
+VALORES_N = [3000, 5000, 7000]
+VALORES_HIDDEN = [(8,), (16,), (32,)]
+VALORES_EPSILON_MUL = [0.9995, 0.9999, 0.99995]
+
+# %%
+# Executa experimentos com is_slippery=False
+print("\n" + "="*80)
+print("EXPERIMENTOS COM is_slippery=False")
+print("="*80 + "\n")
+
+# Experimento 1: Variando lr_opt
+executar_experimento_hiperparametro(
+    'lr_opt',
+    VALORES_LR_OPT,
+    BASE_CONFIG,
+    is_slippery=False
+)
+
+# %%
+# Experimento 2: Variando N
+executar_experimento_hiperparametro(
+    'N',
+    VALORES_N,
+    BASE_CONFIG,
+    is_slippery=False
+)
+
+# %%
+# Experimento 3: Variando hidden
+executar_experimento_hiperparametro(
+    'hidden',
+    VALORES_HIDDEN,
+    BASE_CONFIG,
+    is_slippery=False
+)
+
+# %%
+# Experimento 4: Variando epsilon_mul
+executar_experimento_hiperparametro(
+    'epsilon_mul',
+    VALORES_EPSILON_MUL,
+    BASE_CONFIG,
+    is_slippery=False
+)
+
+# %%
+# Executa experimentos com is_slippery=True
+print("\n" + "="*80)
+print("EXPERIMENTOS COM is_slippery=True")
+print("="*80 + "\n")
+
+# Experimento 1: Variando lr_opt
+executar_experimento_hiperparametro(
+    'lr_opt',
+    VALORES_LR_OPT,
+    BASE_CONFIG,
+    is_slippery=True
+)
+
+# %%
+# Experimento 2: Variando N
+executar_experimento_hiperparametro(
+    'N',
+    VALORES_N,
+    BASE_CONFIG,
+    is_slippery=True
+)
+
+# %%
+# Experimento 3: Variando hidden
+executar_experimento_hiperparametro(
+    'hidden',
+    VALORES_HIDDEN,
+    BASE_CONFIG,
+    is_slippery=True
+)
+
+# %%
+# Experimento 4: Variando epsilon_mul
+executar_experimento_hiperparametro(
+    'epsilon_mul',
+    VALORES_EPSILO 
+    is_slippery=True
+)
+
+
+# %%

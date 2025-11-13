@@ -1,207 +1,147 @@
-## RELATORIO SARSA
+# Laboratório 7B: SARSA (CliffWalking) - Resultados
 
-### experimentos
+## 1. Setup (Parâmetros Usados)
 
-# Valores base dos hiperparâmetros
+### Hiperparâmetros Base
+- **EPISODIOS**: 5000
+- **ALPHA**: 0.01
+- **GAMMA**: 0.9
+- **EPSILON**: 0.3
+- **SEED**: 42
 
-- EPISODIOS: 5000
-- ALPHAL: 0.01
-- GAMMA: 0.9
-- EPSILON: 0.3
-- SEED: 42
+### Valores Testados para Cada Hiperparâmetro
+- **EPISODIOS**: [1000, 5000, 10000]
+- **ALPHA**: [0.001, 0.01, 0.1]
+- **GAMMA**: [0.7, 0.9, 0.99]
+- **EPSILON**: [0.1, 0.3, 0.5]
 
-# Valores a variar para cada hiperparâmetro (3 valores cada)
+---
 
-- VALORES_EPISODIOS: [1000, 5000, 10000]
-- VALORES_ALPHA: [0.001, 0.01, 0.1]
-- VALORES_GAMMA: [0.7, 0.9, 0.99]
-- VALORES_EPSILON: [0.1, 0.3, 0.5]
+## 2. Resultados
 
-```python
+### 2.1 Experimento: Variando EPISODIOS
 
-# %%
-# Executa todos os experimentos
-executar_experimento_hiperparametro(
-    'EPISODIOS', VALORES_EPISODIOS,
-    BASE_EPISODIOS, BASE_ALPHA, BASE_GAMMA, BASE_EPSILON, BASE_SEED
-)
-
-```
-
-    ============================================================
-    Experimento: Variando EPISODIOS
-    ============================================================
-
-    Executando com EPISODIOS=1000...
-
-
-
-    Episódios (SARSA):   0%|          | 0/1000 [00:00<?, ?it/s]
-
-
-
-    Executando com EPISODIOS=5000...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
-
-
-
-    Executando com EPISODIOS=10000...
-
-
-
-    Episódios (SARSA):   0%|          | 0/10000 [00:00<?, ?it/s]
+#### 2.1.1 Métricas de Desempenho
 
 ![png](sarsa-done-only_files/sarsa-done-only_1_6.png)
 
-    Plotando trajetórias gulosas para cada valor de EPISODIOS...
+**Análise:**
+<!-- Preencher com análise dos gráficos de duração do episódio e recompensa total -->
 
+#### 2.1.2 Trajetórias Gulosas
+
+**EPISODIOS=1000:**
 ![png](sarsa-done-only_files/sarsa-done-only_1_8.png)
 
+**EPISODIOS=5000:**
 ![png](sarsa-done-only_files/sarsa-done-only_1_9.png)
 
+**EPISODIOS=10000:**
 ![png](sarsa-done-only_files/sarsa-done-only_1_10.png)
 
-```python
+**Análise das Trajetórias:**
+<!-- Preencher com análise das trajetórias obtidas -->
 
-# %%
-executar_experimento_hiperparametro(
-    'ALPHA', VALORES_ALPHA,
-    BASE_EPISODIOS, BASE_ALPHA, BASE_GAMMA, BASE_EPSILON, BASE_SEED
-)
+---
 
-```
+### 2.2 Experimento: Variando ALPHA
 
-    ============================================================
-    Experimento: Variando ALPHA
-    ============================================================
-
-    Executando com ALPHA=0.001...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
-
-
-
-    Executando com ALPHA=0.01...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
-
-
-
-    Executando com ALPHA=0.1...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
+#### 2.2.1 Métricas de Desempenho
 
 ![png](sarsa-done-only_files/sarsa-done-only_2_6.png)
 
-    Plotando trajetórias gulosas para cada valor de ALPHA...
+**Análise:**
+<!-- Preencher com análise dos gráficos de duração do episódio e recompensa total -->
 
+#### 2.2.2 Trajetórias Gulosas
+
+**ALPHA=0.001:**
 ![png](sarsa-done-only_files/sarsa-done-only_2_8.png)
 
+**ALPHA=0.01:**
 ![png](sarsa-done-only_files/sarsa-done-only_2_9.png)
 
+**ALPHA=0.1:**
 ![png](sarsa-done-only_files/sarsa-done-only_2_10.png)
 
-```python
+**Análise das Trajetórias:**
+<!-- Preencher com análise das trajetórias obtidas -->
 
-# %%
-executar_experimento_hiperparametro(
-    'GAMMA', VALORES_GAMMA,
-    BASE_EPISODIOS, BASE_ALPHA, BASE_GAMMA, BASE_EPSILON, BASE_SEED
-)
+---
 
-```
+### 2.3 Experimento: Variando GAMMA
 
-    ============================================================
-    Experimento: Variando GAMMA
-    ============================================================
-
-    Executando com GAMMA=0.7...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
-
-
-
-    Executando com GAMMA=0.9...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
-
-
-
-    Executando com GAMMA=0.99...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
+#### 2.3.1 Métricas de Desempenho
 
 ![png](sarsa-done-only_files/sarsa-done-only_3_6.png)
 
-    Plotando trajetórias gulosas para cada valor de GAMMA...
+**Análise:**
+<!-- Preencher com análise dos gráficos de duração do episódio e recompensa total -->
 
+#### 2.3.2 Trajetórias Gulosas
+
+**GAMMA=0.7:**
 ![png](sarsa-done-only_files/sarsa-done-only_3_8.png)
 
+**GAMMA=0.9:**
 ![png](sarsa-done-only_files/sarsa-done-only_3_9.png)
 
+**GAMMA=0.99:**
 ![png](sarsa-done-only_files/sarsa-done-only_3_10.png)
 
-```python
+**Análise das Trajetórias:**
+<!-- Preencher com análise das trajetórias obtidas -->
 
-# %%
-executar_experimento_hiperparametro(
-    'EPSILON', VALORES_EPSILON,
-    BASE_EPISODIOS, BASE_ALPHA, BASE_GAMMA, BASE_EPSILON, BASE_SEED
-)
+---
 
-```
+### 2.4 Experimento: Variando EPSILON
 
-    ============================================================
-    Experimento: Variando EPSILON
-    ============================================================
-
-    Executando com EPSILON=0.1...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
-
-
-
-    Executando com EPSILON=0.3...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
-
-
-
-    Executando com EPSILON=0.5...
-
-
-
-    Episódios (SARSA):   0%|          | 0/5000 [00:00<?, ?it/s]
+#### 2.4.1 Métricas de Desempenho
 
 ![png](sarsa-done-only_files/sarsa-done-only_4_6.png)
 
-    Plotando trajetórias gulosas para cada valor de EPSILON...
+**Análise:**
+<!-- Preencher com análise dos gráficos de duração do episódio e recompensa total -->
 
+#### 2.4.2 Trajetórias Gulosas
+
+**EPSILON=0.1:**
 ![png](sarsa-done-only_files/sarsa-done-only_4_8.png)
 
+**EPSILON=0.3:**
 ![png](sarsa-done-only_files/sarsa-done-only_4_9.png)
 
+**EPSILON=0.5:**
 ![png](sarsa-done-only_files/sarsa-done-only_4_10.png)
 
-```python
+**Análise das Trajetórias:**
+<!-- Preencher com análise das trajetórias obtidas -->
 
-```
+---
+
+## 3. Observações Gerais
+
+### 3.1 Resumo dos Resultados por Hiperparâmetro
+
+**EPISODIOS:**
+<!-- Preencher com observações sobre o impacto do número de episódios -->
+
+**ALPHA:**
+<!-- Preencher com observações sobre o impacto da taxa de aprendizado -->
+
+**GAMMA:**
+<!-- Preencher com observações sobre o impacto do fator de desconto -->
+
+**EPSILON:**
+<!-- Preencher com observações sobre o impacto do parâmetro de exploração -->
+
+---
+
+## 4. Conclusões
+
+<!-- Preencher com conclusões gerais sobre:
+- Qual configuração de hiperparâmetros apresentou melhor desempenho
+- Impacto de cada hiperparâmetro no aprendizado
+- Comportamento do algoritmo SARSA no ambiente CliffWalking
+- Recomendações para uso prático
+-->

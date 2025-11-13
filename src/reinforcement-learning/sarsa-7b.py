@@ -847,4 +847,170 @@ _ = plot_tabular(V, kind="V", env_name=ambiente, center_zero=False)
 # - O PDF **NÃO** deve conter:
 #     - Códigos.
 
+# %%
+# Função auxiliar para plotar métricas comparativas
+def plotar_metricas_comparativas(
+    resultados: Dict[str, Tuple[List[int], List[float]]],
+    titulo: str = "Comparação de Hiperparâmetros"
+):
+    """
+    Plota métricas comparativas para múltiplas execuções.
+    
+    Parâmetros
+    ----------
+    resultados : dict[str, tuple[list[int], list[float]]]
+        Dicionário onde a chave é o label e o valor é (episodio_len, episodio_return)
+    titulo : str
+        Título da figura
+    """
+    fig, axs = plt.subplots(nrows=2, ncols=1, figsize=(12, 8), sharex=True)
+    
+    # Plot 1 - Duração do episódio
+    for label, (T, G) in resultados.items():
+        df = pd.DataFrame({
+            'episodio': np.arange(len(T)),
+            'tamanho': T
+        })
+        df['tamanho_ma'] = df['tamanho'].rolling(window=100).mean()
+        sns.lineplot(data=df, x='episodio', y='tamanho', ax=axs[0], alpha=0.2, linewidth=0.5)
+        sns.lineplot(data=df, x='episodio', y='tamanho_ma', ax=axs[0], label=label, linewidth=2)
+    
+    axs[0].set_ylabel('Passos por Episódio')
+    axs[0].legend()
+    axs[0].grid()
+    axs[0].set_title('Duração do Episódio')
+    
+    # Plot 2 - Retorno
+    for label, (T, G) in resultados.items():
+        df = pd.DataFrame({
+            'episodio': np.arange(len(G)),
+            'retorno': G
+        })
+        df['retorno_ma'] = df['retorno'].rolling(window=100).mean()
+        sns.lineplot(data=df, x='episodio', y='retorno', ax=axs[1], alpha=0.2, linewidth=0.5)
+        sns.lineplot(data=df, x='episodio', y='retorno_ma', ax=axs[1], label=label, linewidth=2)
+    
+    axs[1].set_xlabel('Episódio')
+    axs[1].set_ylabel('Recompensa Total')
+    axs[1].legend()
+    axs[1].grid()
+    axs[1].set_title('Recompensa Total por Episódio')
+    
+    fig.suptitle(titulo, y=1.02, fontsize=14)
+    plt.tight_layout()
+    plt.show()
 
+# %%
+# Função genérica para executar experimento variando um hiperparâmetro
+def executar_experimento_hiperparametro(
+    nome_hiperparametro: str,
+    valores: List[Union[int, float]],
+    base_episodios: int,
+    base_alpha: float,
+    base_gamma: float,
+    base_epsilon: float,
+    seed: int
+):
+    """
+    Executa experimento variando um hiperparâmetro específico.
+    
+    Parâmetros
+    ----------
+    nome_hiperparametro : str
+        Nome do hiperparâmetro ('EPISODIOS', 'ALPHA', 'GAMMA', 'EPSILON')
+    valores : list
+        Lista de valores a testar
+    base_episodios, base_alpha, base_gamma, base_epsilon : float/int
+        Valores base para os outros hiperparâmetros
+    seed : int
+        Semente para reprodutibilidade
+    """
+    print("=" * 60)
+    print(f"Experimento: Variando {nome_hiperparametro}")
+    print("=" * 60)
+    
+    resultados = {}
+    politicas = {}  # Armazena todas as políticas
+    
+    for valor in valores:
+        print(f"\nExecutando com {nome_hiperparametro}={valor}...")
+        
+        # Prepara parâmetros do SARSA
+        kwargs = {
+            'gamma': base_gamma,
+            'N': base_episodios,
+            'epsilon': base_epsilon,
+            'alpha': base_alpha,
+            'seed': seed
+        }
+        
+        # Substitui o hiperparâmetro que está sendo variado
+        if nome_hiperparametro == 'EPISODIOS':
+            kwargs['N'] = valor
+        elif nome_hiperparametro == 'ALPHA':
+            kwargs['alpha'] = valor
+        elif nome_hiperparametro == 'GAMMA':
+            kwargs['gamma'] = valor
+        elif nome_hiperparametro == 'EPSILON':
+            kwargs['epsilon'] = valor
+        
+        # Executa SARSA
+        env_exp = gym.make(ambiente, render_mode=render_mode)
+        Q_exp, Pi_exp, _, _, T_exp, G_exp = sarsa(env_exp, **kwargs)
+        env_exp.close()
+        
+        # Armazena resultados
+        label = f"{nome_hiperparametro}={valor}"
+        resultados[label] = (T_exp, G_exp)
+        politicas[valor] = Pi_exp
+    
+    # Plota métricas comparativas
+    plotar_metricas_comparativas(resultados, f"Comparação: Variando {nome_hiperparametro}")
+    
+    # Trajetória gulosa para cada valor testado
+    print(f"\nPlotando trajetórias gulosas para cada valor de {nome_hiperparametro}...")
+    for valor in valores:
+        estados_exp, _, _ = simular_trajetoria_gym(politicas[valor], ambiente, max_steps=200)
+        plot_trajetoria_gym(ambiente, estados_exp, titulo=f"Trajetória Gulosa - {nome_hiperparametro}={valor}")
+
+# %%
+# Valores base dos hiperparâmetros
+BASE_EPISODIOS = 5000
+BASE_ALPHA = 0.01
+BASE_GAMMA = 0.9
+BASE_EPSILON = 0.3
+BASE_SEED = 42
+
+# Valores a variar para cada hiperparâmetro (3 valores cada)
+VALORES_EPISODIOS = [1000, 5000, 10000]
+VALORES_ALPHA = [0.001, 0.01, 0.1]
+VALORES_GAMMA = [0.7, 0.9, 0.99]
+VALORES_EPSILON = [0.1, 0.3, 0.5]
+
+# %%
+# Executa todos os experimentos
+executar_experimento_hiperparametro(
+    'EPISODIOS', VALORES_EPISODIOS,
+    BASE_EPISODIOS, BASE_ALPHA, BASE_GAMMA, BASE_EPSILON, BASE_SEED
+)
+
+# %%
+executar_experimento_hiperparametro(
+    'ALPHA', VALORES_ALPHA,
+    BASE_EPISODIOS, BASE_ALPHA, BASE_GAMMA, BASE_EPSILON, BASE_SEED
+)
+
+# %%
+executar_experimento_hiperparametro(
+    'GAMMA', VALORES_GAMMA,
+    BASE_EPISODIOS, BASE_ALPHA, BASE_GAMMA, BASE_EPSILON, BASE_SEED
+)
+
+# %%
+executar_experimento_hiperparametro(
+    'EPSILON', VALORES_EPSILON,
+    BASE_EPISODIOS, BASE_ALPHA, BASE_GAMMA, BASE_EPSILON, BASE_SEED
+)
+
+
+# %%
