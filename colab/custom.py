@@ -1,5 +1,6 @@
 # %% [markdown]
 # # Atividade: CNNs para Classificação
+# Aluno: Rafael Magno Freitas Nunes
 #
 # Neste notebook, iremos preparar nosso próprio dataset e treinar um modelo de classificação de imagens.
 
@@ -8,12 +9,12 @@
 #
 # Os dados desta atividade serão baixados da internet. Utilizaremos para isso buscadores comuns. Em seguida, dividiremos em treinamento e validação.
 # %%
-!pip install icrawler
+!pip install kagglehub
 # %%
+import kagglehub
 import os
 import shutil
 import random
-from icrawler.builtin import GoogleImageCrawler, BingImageCrawler
 
 # %% [markdown]
 # ### Adquirindo as Imagens
@@ -21,28 +22,49 @@ from icrawler.builtin import GoogleImageCrawler, BingImageCrawler
 # Utilizaremos o iCrawler para baixar imagens em buscadores através de termos especificados. Defina sua lista de classes.
 
 # %%
-def download_images(keyword, folder, n_total=100):
-    os.makedirs(folder, exist_ok=True)
-    downloaded = len(os.listdir(folder))
-    remaining = n_total - downloaded
+_download_path = kagglehub.dataset_download("utkarshsaxenadn/car-vs-bike-classification-dataset")
+BASE_DIR = os.path.join(_download_path, "Car-Bike-Dataset")
+print(f"Dataset em: {BASE_DIR}")
 
-    while downloaded < n_total:
-        # crawler = GoogleImageCrawler(storage={'root_dir': folder})
-        crawler = BingImageCrawler(storage={'root_dir': folder})
-        crawler.crawl(keyword=keyword, max_num=remaining, file_idx_offset=downloaded)
-        downloaded = len(os.listdir(folder))
-        remaining = n_total - downloaded
-        print(f"Downloaded {downloaded}/{n_total}")
-
-    print("Download complete!")
+# %% [markdown]
+# ### Amostras do Dataset
+#
+# Visualiza algumas imagens baixadas de cada classe para conferir a qualidade.
 
 # %%
-# search_terms = {
-#     "vader": "darth vader", # nome da classe: termo que será usado na busca
-# }
+from PIL import Image, UnidentifiedImageError
+import matplotlib.pyplot as plt
+import os
 
-# for label, term in search_terms.items():
-#     download_images(term, f"data/star_wars/{label}", n_total=100)
+def show_samples(root_dir, n_per_class=4):
+    classes = sorted(os.listdir(root_dir))
+    fig, axes = plt.subplots(len(classes), n_per_class, figsize=(n_per_class * 3, len(classes) * 3))
+
+    for row, cls in enumerate(classes):
+        cls_path = os.path.join(root_dir, cls)
+        files = [f for f in os.listdir(cls_path) if os.path.isfile(os.path.join(cls_path, f))]
+        samples, i = [], 0
+        while len(samples) < n_per_class and i < len(files):
+            try:
+                img = Image.open(os.path.join(cls_path, files[i])).convert("RGB")
+                samples.append(img)
+            except UnidentifiedImageError:
+                pass
+            i += 1
+
+        for col in range(n_per_class):
+            ax = axes[row][col] if len(classes) > 1 else axes[col]
+            if col < len(samples):
+                ax.imshow(samples[col])
+            else:
+                ax.axis("off")
+            ax.set_title(cls if col == 0 else "", fontsize=10, fontweight="bold")
+            ax.axis("off")
+
+    plt.tight_layout()
+    plt.show()
+
+show_samples(BASE_DIR)
 
 # %% [markdown]
 # ### Treinamento e Validação
@@ -50,14 +72,16 @@ def download_images(keyword, folder, n_total=100):
 # Dividiremos as imagens baixadas nas pastas `train` e `val`. Defina uma porcentagem.
 
 # %%
-def split_train_val(root_dir, train_ratio=0.8, seed=42):
+SPLIT_DIR = "data/car_vs_bike_split"
+
+def split_train_val(root_dir, out_dir, train_ratio=0.8, seed=42):
     random.seed(seed)
 
-    train_dir = root_dir + "_split/train"
-    val_dir = root_dir + "_split/val"
+    train_dir = os.path.join(out_dir, "train")
+    val_dir   = os.path.join(out_dir, "val")
 
     os.makedirs(train_dir, exist_ok=True)
-    os.makedirs(val_dir, exist_ok=True)
+    os.makedirs(val_dir,   exist_ok=True)
 
     for class_name in os.listdir(root_dir):
         class_path = os.path.join(root_dir, class_name)
@@ -71,9 +95,9 @@ def split_train_val(root_dir, train_ratio=0.8, seed=42):
         n_train = int(len(images) * train_ratio)
 
         train_class_dir = os.path.join(train_dir, class_name)
-        val_class_dir = os.path.join(val_dir, class_name)
+        val_class_dir   = os.path.join(val_dir,   class_name)
         os.makedirs(train_class_dir, exist_ok=True)
-        os.makedirs(val_class_dir, exist_ok=True)
+        os.makedirs(val_class_dir,   exist_ok=True)
 
         for img in images[:n_train]:
             shutil.copy(img, os.path.join(train_class_dir, os.path.basename(img)))
@@ -81,6 +105,10 @@ def split_train_val(root_dir, train_ratio=0.8, seed=42):
             shutil.copy(img, os.path.join(val_class_dir, os.path.basename(img)))
 
         print(f"{class_name}: {n_train} train, {len(images)-n_train} val")
+
+if os.path.exists(SPLIT_DIR):
+    shutil.rmtree(SPLIT_DIR)
+split_train_val(BASE_DIR, SPLIT_DIR)
 
 # %% [markdown]
 # ## Dataset
@@ -94,22 +122,27 @@ import torchvision
 import torchvision.transforms as transforms
 
 BATCH_SIZE = 64
-DATA_DIR = "./data/mnist"
+DATA_DIR = SPLIT_DIR
 
 train_transform = transforms.Compose([
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.RandomHorizontalFlip(),
     transforms.RandomRotation(10),
-    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+    transforms.ColorJitter(brightness=0.2, contrast=0.2),
     transforms.ToTensor(),
-    transforms.Normalize((0.1307,), (0.3081,)),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
 ])
 
 val_transform = transforms.Compose([
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
     transforms.ToTensor(),
-    transforms.Normalize((0.1307,), (0.3081,)),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
 ])
 
-train_dataset = torchvision.datasets.MNIST(root=DATA_DIR, train=True,  download=True, transform=train_transform)
-val_dataset   = torchvision.datasets.MNIST(root=DATA_DIR, train=False, download=True, transform=val_transform)
+train_dataset = torchvision.datasets.ImageFolder(root=DATA_DIR + "/train", transform=train_transform)
+val_dataset   = torchvision.datasets.ImageFolder(root=DATA_DIR + "/val",   transform=val_transform)
 
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True,  num_workers=2, pin_memory=True)
 val_loader   = DataLoader(val_dataset,   batch_size=BATCH_SIZE, shuffle=False, num_workers=2, pin_memory=True)
@@ -124,53 +157,23 @@ print(f"Classes: {train_dataset.classes}")
 
 # %%
 import torch.nn as nn
-import torch.nn.functional as F
+from torchvision.models import resnet18, ResNet18_Weights
 
-# Arquitetura 1: CNN simples
-class SimpleCNN(nn.Module):
-    def __init__(self, num_classes=10):
-        super().__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(1, 32, 3, padding=1), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, 3, padding=1), nn.ReLU(), nn.MaxPool2d(2),
-        )
-        self.classifier = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(64 * 7 * 7, 128), nn.ReLU(), nn.Dropout(0.5),
-            nn.Linear(128, num_classes),
-        )
-
-    def forward(self, x):
-        return self.classifier(self.features(x))
-
-
-# Arquitetura 2: CNN mais profunda com BatchNorm
-class DeepCNN(nn.Module):
-    def __init__(self, num_classes=10):
-        super().__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(1, 32, 3, padding=1), nn.BatchNorm2d(32), nn.ReLU(),
-            nn.Conv2d(32, 32, 3, padding=1), nn.BatchNorm2d(32), nn.ReLU(), nn.MaxPool2d(2), nn.Dropout2d(0.25),
-            nn.Conv2d(32, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(),
-            nn.Conv2d(64, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(), nn.MaxPool2d(2), nn.Dropout2d(0.25),
-        )
-        self.classifier = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(64 * 7 * 7, 256), nn.ReLU(), nn.Dropout(0.5),
-            nn.Linear(256, num_classes),
-        )
-
-    def forward(self, x):
-        return self.classifier(self.features(x))
-
+NUM_CLASSES = 2
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Usando: {device}")
 
-# Escolha o modelo aqui
-model = DeepCNN(num_classes=10).to(device)
+model = resnet18(weights=ResNet18_Weights.DEFAULT)
+
+for param in model.parameters():
+    param.requires_grad = False
+
+model.fc = nn.Linear(model.fc.in_features, NUM_CLASSES)
+model = model.to(device)
+
 print(model)
-print(f"Parâmetros: {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")
+print(f"Parâmetros treináveis: {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")
 
 # %% [markdown]
 # ## Treinamento
@@ -184,7 +187,7 @@ EPOCHS = 10
 LR = 1e-3
 
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=1e-4)
+optimizer = torch.optim.Adam(model.fc.parameters(), lr=LR, weight_decay=1e-4)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS)
 
 history = {"train_loss": [], "val_loss": [], "train_acc": [], "val_acc": []}
@@ -269,38 +272,53 @@ all_labels = torch.cat(all_labels).numpy()
 
 acc = (all_preds == all_labels).mean()
 print(f"\nAcurácia no conjunto de validação: {acc:.4f} ({acc*100:.2f}%)\n")
-print(classification_report(all_labels, all_preds, target_names=[str(i) for i in range(10)]))
+print(classification_report(all_labels, all_preds, target_names=val_dataset.classes))
 
 # %%
 cm = confusion_matrix(all_labels, all_preds)
 
-plt.figure(figsize=(10, 8))
+plt.figure(figsize=(6, 5))
 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
-            xticklabels=range(10), yticklabels=range(10))
+            xticklabels=val_dataset.classes, yticklabels=val_dataset.classes)
 plt.xlabel("Predito")
 plt.ylabel("Real")
-plt.title("Matriz de Confusão — MNIST")
+plt.title("Matriz de Confusão — Car vs Bike")
 plt.tight_layout()
 plt.savefig("confusion_matrix.png", dpi=150)
 plt.show()
 
 # %%
-# Visualiza algumas predições do conjunto de validação
-n = 16
-images, labels = next(iter(val_loader))
+# Visualiza 8 predições de cada classe (Bike e Car)
 model.eval()
+class_names = val_dataset.classes
+n_per_class = 8
+
+samples_per_class = {i: [] for i in range(len(class_names))}
+
 with torch.no_grad():
-    preds = model(images.to(device)).argmax(1).cpu()
+    for images, labels in val_loader:
+        preds = model(images.to(device)).argmax(1).cpu()
+        for img, label, pred in zip(images, labels, preds):
+            c = label.item()
+            if len(samples_per_class[c]) < n_per_class:
+                samples_per_class[c].append((img, label, pred))
+        if all(len(v) >= n_per_class for v in samples_per_class.values()):
+            break
 
-fig, axes = plt.subplots(4, 4, figsize=(8, 8))
-for i, ax in enumerate(axes.flat):
-    img = images[i].squeeze().numpy()
-    ax.imshow(img, cmap="gray")
-    color = "green" if preds[i] == labels[i] else "red"
-    ax.set_title(f"pred={preds[i].item()} real={labels[i].item()}", color=color, fontsize=9)
-    ax.axis("off")
+fig, axes = plt.subplots(len(class_names), n_per_class, figsize=(n_per_class * 2, len(class_names) * 2.5))
+for row, cls_idx in enumerate(range(len(class_names))):
+    for col, (img, label, pred) in enumerate(samples_per_class[cls_idx]):
+        ax = axes[row][col]
+        img_np = img.permute(1, 2, 0).numpy()
+        img_np = (img_np * [0.229, 0.224, 0.225] + [0.485, 0.456, 0.406]).clip(0, 1)
+        ax.imshow(img_np)
+        color = "green" if pred == label else "red"
+        ax.set_title(f"pred={class_names[pred]}", color=color, fontsize=7)
+        if col == 0:
+            ax.set_ylabel(class_names[cls_idx], fontsize=10, fontweight="bold")
+        ax.axis("off")
 
-plt.suptitle("Predições (verde=acerto, vermelho=erro)")
+plt.suptitle("Predições por classe (verde=acerto, vermelho=erro)")
 plt.tight_layout()
 plt.savefig("predictions.png", dpi=150)
 plt.show()
